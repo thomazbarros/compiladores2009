@@ -36,8 +36,8 @@ T : T '*' F  { $$.codigo= $1.codigo + $3.codigo + "*"; }
 F : TK_ID     	{$$.codigo = $$.valor;} 
   | TK_INTEIRO 	{$$.codigo = $$.valor;}
   | TK_STRING	{$$.codigo = $$.valor;}
-  | TK_REAL 	{$$.codigo = $$.valor;}
-  | TK_CARACTER	{$$.codigo = $$.valor;}
+  | TK_FLOAT 	{$$.codigo = $$.valor;}
+  | TK_CHAR	{$$.codigo = $$.valor;}
   | '(' E ')' { $$.codigo = $2.codigo; }  
   ;
 
