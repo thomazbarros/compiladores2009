@@ -1,0 +1,61 @@
+%{
+#include <string>
+#include <iostream>
+
+using namespace std;
+
+typedef struct {
+	string valor,codigo;
+	char tipo;
+}atributos_compilador; 
+
+#define YYSTYPE atributos_compilador
+
+int yyparse();
+void yyerror( const char* st );
+int yylex();
+
+%}
+
+%token TK_ID TK_INTEIRO TK_MAIS TK_STRING TK_FUNC TK_CARACTER TK_REAL
+
+%%
+S : E { cout << $$.codigo << endl; }
+  ;
+
+E : E '+' T { $$.codigo = $1.codigo + $3.codigo + "+"; }
+  | E '-' T { $$.codigo = $1.codigo + $3.codigo + "-"; }
+  | T
+  ;
+
+T : T '*' F  { $$.codigo= $1.codigo + $3.codigo + "*"; }
+  | T '/' F  { $$.codigo = $1.codigo + $3.codigo + "/"; }
+  | F
+  ;
+
+F : TK_ID     	{$$.codigo = $$.valor;} 
+  | TK_INTEIRO 	{$$.codigo = $$.valor;}
+  | TK_STRING	{$$.codigo = $$.valor;}
+  | TK_REAL 	{$$.codigo = $$.valor;}
+  | TK_CARACTER	{$$.codigo = $$.valor;}
+  | '(' E ')' { $$.codigo = $2.codigo; }  
+  ;
+
+%%
+#include "lex.yy.c"
+
+int yyparse();
+
+void yyerror( const char* st )
+{
+  puts( st );
+}
+
+int main( int argc, char* argv[] )
+{
+  yyparse();
+}
+
+
+
+
