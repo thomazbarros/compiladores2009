@@ -4,12 +4,17 @@
 
 using namespace std;
 
+#include "funcoes.h"
 typedef struct {
 	string valor,codigo;
 	char tipo;
 }atributos_compilador; 
 
 #define YYSTYPE atributos_compilador
+#define SOMA 0 
+#define SUBTR 1
+#define MULT 2
+#define DIV 3
 
 int yyparse();
 void yyerror( const char* st );
@@ -23,22 +28,29 @@ int yylex();
 S : E { cout << $$.codigo << endl; }
   ;
 
-E : E '+' T { $$.codigo = $1.codigo + $3.codigo + "+"; }
-  | E '-' T { $$.codigo = $1.codigo + $3.codigo + "-"; }
+E : E '+' T { realizar_operacao(SOMA,$$,$1,$3) ; }
+  | E '-' T { realizar_operacao(SUBTR,$$,$1,$3) ; }
   | T
   ;
 
-T : T '*' F  { $$.codigo= $1.codigo + $3.codigo + "*"; }
-  | T '/' F  { $$.codigo = $1.codigo + $3.codigo + "/"; }
+T : T '*' F  { realizar_operacao(MULT,$$,$1,$3)}
+  | T '/' F  { realizar_operacao(DIV,$$,$1,$3); }
   | F
   ;
 
-F : TK_ID     	{$$.codigo = $$.valor;} 
-  | TK_INTEIRO 	{$$.codigo = $$.valor;}
-  | TK_STRING	{$$.codigo = $$.valor;}
-  | TK_REAL 	{$$.codigo = $$.valor;}
-  | TK_CARACTER	{$$.codigo = $$.valor;}
-  | '(' E ')' { $$.codigo = $2.codigo; }  
+F : TK_ID     	 
+  | TK_INTEIRO 	
+  | TK_STRING	
+  | TK_REAL 	
+  | TK_CARACTER	
+  | TK_BOOLEANO   
+  ;
+
+TIPO : TK_INTEIRO 	{ $$.codigo = $$.valor; }
+  | TK_STRING	        { $$.codigo = $$.valor; }
+  | TK_REAL 	        { $$.codigo = $$.valor; }
+  | TK_CARACTER	        { $$.codigo = $$.valor; }
+  | TK_BOOLEANO         { $$.codigo = $$.valor; }
   ;
 
 %%
