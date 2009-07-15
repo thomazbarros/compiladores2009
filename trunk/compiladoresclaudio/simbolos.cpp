@@ -1,0 +1,348 @@
+#include <iostream>
+#include <string>
+#include "erro.cpp"
+#include "variaveis.cpp"
+
+using namespace std;
+
+int tamanho_tipo (string);
+string busca_tipo_operacao (string, string, string);
+string gera_temp (string);
+string gera_codigo (string, string, string, string);
+string inttostr(int);
+string strtoupper(string);
+
+string busca_tipo_dim0 (string nome)
+{
+	int i;
+	for (i=0;i<N_SIMB;i++)
+	{
+		if (tab_simb[i].nome==nome && tab_simb[i].func==ID_NOVO.func)
+		{
+			if (tab_simb[i].n_dim!=0)
+			{
+				erro("\""+nome+"\" nao eh uma variavel de dimensao 0.");
+			}
+			return tab_simb[i].tipo;
+		}
+	}
+	for (i=0;i<N_SIMB;i++)
+	{
+		if (tab_simb[i].nome==nome && tab_simb[i].func=="")
+		{
+			if (tab_simb[i].n_dim!=0)
+			{
+				erro("\""+nome+"\" nao eh uma variavel de dimensao 0.");
+			}
+			return tab_simb[i].tipo;
+		}
+	}
+	erro("A variavel \""+nome+"\" nao foi declarada.");
+	return "int";
+}
+
+string busca_tipo_dim1 (string nome)
+{
+	int i;
+	for (i=0;i<N_SIMB;i++)
+	{
+		if (tab_simb[i].nome==nome && tab_simb[i].func==ID_NOVO.func)
+		{
+			if (tab_simb[i].n_dim!=1)
+			{
+				erro("\""+nome+"\" nao eh uma variavel de dimensao 1.");
+			}
+			return tab_simb[i].tipo;
+		}
+	}
+	for (i=0;i<N_SIMB;i++)
+	{
+		if (tab_simb[i].nome==nome && tab_simb[i].func=="")
+		{
+			if (tab_simb[i].n_dim!=1)
+			{
+				erro("\""+nome+"\" nao eh uma variavel de dimensao 1.");
+			}
+			return tab_simb[i].tipo;
+		}
+	}
+	erro("A variavel \""+nome+"\" nao foi declarada.");
+	return "int";
+}
+
+string busca_tipo_dim2 (string nome, int& ysize)
+{
+	int i;
+	for (i=0;i<N_SIMB;i++)
+	{
+		if (tab_simb[i].nome==nome && tab_simb[i].func==ID_NOVO.func)
+		{
+			if (tab_simb[i].n_dim!=2)
+			{
+				erro("\""+nome+"\" nao eh uma variavel de dimensao 2.");
+			}
+			//tam_elemento=tab_simb[i].tamanho;
+			//inicio=tab_simb[i].inicio[0];
+			ysize = tab_simb[i].ysize;
+			return tab_simb[i].tipo;
+
+		}
+	}
+	for (i=0;i<N_SIMB;i++)
+	{
+		if (tab_simb[i].nome==nome && tab_simb[i].func=="")
+		{
+			if (tab_simb[i].n_dim!=2)
+			{
+				erro("\""+nome+"\" nao eh uma variavel de dimensao 2.");
+			}
+			//tam_elemento=tab_simb[i].tamanho;
+			//inicio=tab_simb[i].inicio[0];
+			ysize = tab_simb[i].ysize;
+			return tab_simb[i].tipo;
+
+		}
+	}
+	erro("A variavel \""+nome+"\" nao foi declarada.");
+	ysize = 0;
+	//tam_elemento=sizeof(int);
+	return "int";
+}
+
+int tamanho_tipo (string tipo)
+{
+	if (tipo=="int") return sizeof(int);
+	else if (tipo=="char") return sizeof(char);
+	else if (tipo=="string") return sizeof(string);
+	else if (tipo=="bool") return sizeof(bool);
+}
+
+void insere_tipo_dimX (string nome, string tipo, int n_dim, int xsize, int ysize, string func)
+{
+	int i;
+	for (i=0;i<N_SIMB;i++)
+	{
+		if (tab_simb[i].nome==nome && tab_simb[i].func==func)
+		{
+			erro ("Nao foi possivel adicionar \""+nome+"\". A variavel ja foi declarada.");
+			return ;
+		}
+	}
+	if (i==MAX_TAB_SIMB)
+	{
+		erro("Limite de simbolos na tabela esgotado. Nao foi possivel adicionar \""+nome+"\".");
+		return ;
+	}
+	N_SIMB++;
+	tab_simb[i].nome=nome;
+	tab_simb[i].tipo=tipo;
+	tab_simb[i].n_dim=n_dim;
+	tab_simb[i].xsize=xsize;
+	tab_simb[i].ysize=ysize;
+	tab_simb[i].func=func;
+	tab_simb[i].tamanho=tamanho_tipo(tipo);
+}
+
+void insere_funcao (string nome, string tipo)
+{
+	int i;
+	for (i=0;i<N_FUNC;i++)
+	{
+		if (tab_func[i].nome==nome)
+		{
+			erro ("Nao foi possivel adicionar \""+nome+"\". A funcao ja foi declarada.");
+			return ;
+		}
+	}
+	if (i==MAX_TAB_FUNC)
+	{
+		erro("Limite de funcoes na tabela esgotado. Nao foi possivel adicionar \""+nome+"\".");
+		return ;
+	}
+	N_FUNC++;
+	tab_func[i].nome=nome;
+	tab_func[i].tipo=tipo;
+}
+
+string busca_funcao (string nome)
+{
+	int i;
+	for (i=0;i<N_FUNC;i++)
+	{
+		if (tab_func[i].nome==nome) return tab_func[i].tipo;
+	}
+	erro("A funcao \""+nome+"\" nao foi declarada.",1);
+	return "";
+}
+
+void insere_param (string nome, string tipo, int posicao)
+{
+	int i;
+	for (i=0;i<N_PARAM;i++)
+	{
+		if (tab_param[i].nome==nome && tab_param[i].func==ID_NOVO.func)
+		{
+			erro ("Nao foi possivel adicionar \""+nome+"\". O parametro ja foi declarado.");
+			return ;
+		}
+	}
+	if (i==MAX_TAB_PARAM)
+	{
+		erro("Limite de parametros na tabela esgotado. Nao foi possivel adicionar \""+nome+"\".");
+		return ;
+	}
+	N_PARAM++;
+	tab_param[i].nome=nome;
+	tab_param[i].tipo=tipo;
+	tab_param[i].posicao=posicao;
+	tab_param[i].func=ID_NOVO.func;
+}
+
+void acabou_param (string func, int posicao)
+{
+	int i;
+	for (i=0;i<N_PARAM;i++)
+	{
+		if (tab_param[i].func==func && tab_param[i].posicao>=posicao)
+		{
+			erro ("O numero de parametros da chamada da funcao \""+func+"\" estah incorreto.",1);
+			return ;
+		}
+	}
+}
+
+string busca_tipo_param(string func, int posicao) {
+	int i;
+	for (i=0;i<N_PARAM;i++)
+	{
+		if (tab_param[i].func==func && tab_param[i].posicao==posicao)
+		{
+			return tab_param[i].tipo;
+		}
+	}
+	return "";
+}
+
+string busca_param (string tipo, string func, int posicao)
+{
+	int i;
+	string temp1, temp2;
+	
+	temp1=busca_tipo_param(func,posicao);
+	
+	if (temp1=="")
+	{
+		erro("Nao existe parametro \""+inttostr(posicao)+"\" na funcao \""+func+"\".",1);
+	}
+	
+	temp2=busca_tipo_operacao("=",temp1,tipo);
+
+	for (i=0;i<N_PARAM;i++)
+	{
+		if (temp2!="" && tab_param[i].func==func && tab_param[i].posicao==posicao)
+		{
+			return tab_param[i].nome;
+		}
+	}
+	erro("O parametro \""+inttostr(posicao)+"\" da funcao \""+func+"\" nao pode ser do tipo \""+tipo+"\" (\""+temp1+"\" esperado).",1);
+	return "";
+}
+
+string busca_tipo_operacao(string op, string a, string b)
+{
+	int i;
+	for (i=0;tab_operadores[i].op!="num deu !";i++)
+		if (tab_operadores[i].op==op && tab_operadores[i].a==a && tab_operadores[i].b==b)
+			return tab_operadores[i].res;
+	erro ("Operacao \""+a+op+b+"\" nao eh compativel com os tipos dos operadores.");
+	return "";
+}
+
+void gera_operacao (atributo& SS, const atributo& S1, const atributo& S2, const atributo& S3)
+{
+	SS.t=busca_tipo_operacao(S2.v,S1.t,S3.t);
+	SS.v=gera_temp(SS.t);
+	SS.c=S1.c+S3.c+gera_codigo(S2.v,SS.v,S1.v,S3.v);
+}
+
+string gera_atribuicao (const string at, const atributo& S2, const atributo& S3, const atributo& S4)
+{
+	if (at=="=")
+	{
+		if (busca_tipo_operacao("=",S2.t,S3.t)!="")
+		{
+			return gera_codigo(at,S2.v,S3.v,S4.v);
+		}
+		else erro("Nao eh possivel atribuir ao \""+S2.v+"\" um valor do tipo \""+S3.t+"\".",1);
+	}
+	else if (at=="[]=")
+	{
+		if (busca_tipo_operacao("=",S2.t,S4.t)!="")
+		{
+			if (S3.t=="int")
+			{
+				return gera_codigo(at,S2.v,S3.v,S4.v);
+			}
+			else erro("O indice do array|matriz \""+S2.v+"\" deve ser um int, nao um \""+S3.t+"\".",1);
+		}
+		else erro("Nao eh possivel atribuir ao \""+S2.v+"\" um valor do tipo \""+S4.t+"\".",1);
+	}
+	else if (at=="=[]")
+	{
+		if (busca_tipo_operacao("=",S2.t,S3.t)!="")
+		{
+			if (S4.t=="int")
+			{
+				return gera_codigo(at,S2.v,S3.v,S4.v);
+			}
+			else erro("O indice do array|matriz \""+S3.v+"\" deve ser um int, nao um \""+S4.t+"\".",1);
+		}
+		else erro("Nao eh possivel atribuir ao \""+S2.v+"\" um valor do tipo \""+S3.t+"\".",1);
+	}
+}
+
+string gera_codigo(string operador="", string e1="", string e2="", string e3="")
+{
+	return operador+"\t"+e1+"\t"+e2+"\t"+e3+"\n";
+}
+
+string gera_temp(string tipo)
+{
+	char buffer[200];
+	sprintf (buffer,"T%d",++N_TEMP);
+	TEMP_CODIGO+=gera_codigo("VAR",tipo,buffer);
+	return buffer;
+}
+
+string gera_label(string nome)
+{
+	char buffer[200];
+	sprintf (buffer,"L%d_",++N_LABEL);
+	return buffer+nome;
+}
+
+int strtoint(string entrada)
+{
+	int resultado;
+	resultado = atoi(entrada.c_str());
+	return resultado;
+}
+
+string inttostr (int entrada)
+{
+	char resultado[200];
+	sprintf (resultado,"%d",entrada);
+	return resultado;
+}
+
+string strtolower (string entrada)
+{
+	transform(entrada.begin(), entrada.end(), entrada.begin(), (int(*)(int))tolower);
+	return entrada;
+}
+
+string strtoupper (string entrada)
+{
+	transform(entrada.begin(), entrada.end(), entrada.begin(), (int(*)(int))toupper);
+	return entrada;
+}

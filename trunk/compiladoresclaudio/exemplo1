@@ -1,0 +1,17 @@
+func int fib (int n)
+{
+	facaSe(n==1 || n==2)
+	{
+		voltaAew n;
+	}
+	voltaAew fib(n-1)+fib(n-2);
+}
+
+showTime
+{
+	int i;
+	escreve "Digite um numero:";
+	le i;
+	escreve fib(i);
+	
+}

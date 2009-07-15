@@ -1,0 +1,33 @@
+showTime
+{
+	int temp,i,j,k;
+	int[3][3] a,b,c;
+	facaPara(i=0:3;1)
+	{
+		facaPara(j=0:3;1)
+		{
+			le temp;
+			a[i][j]=temp;
+		}
+	}
+	facaPara(i=0:3;1)
+	{
+		facaPara(j=0:3;1)
+		{
+			le temp;
+			b[i][j]=temp;
+		}
+	}
+	facaPara(i=0:3;1)
+	{
+		facaPara(j=0:3;1)
+		{
+			c[i][j]=0;
+			facaPara(k=0:3;1)
+			{
+				c[i][j]=c[i][j]+a[i][k]*b[k][j];
+			}
+			escreve c[i][j];
+		}
+	}
+}

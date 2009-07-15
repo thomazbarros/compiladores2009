@@ -1,0 +1,21 @@
+func bool ehomestre (string nome)
+{
+	facaSe (nome=="Zimbrao")
+	{
+		voltaAew true;
+	}
+	numDeu
+	{
+		voltaAew false;
+	}
+}
+
+showTime
+{
+	string nome="Zimbrao";
+	facaSe (ehomestre (nome))
+	{
+		escreve "Mestre";
+	}
+	
+}
