@@ -1,0 +1,43 @@
+a : inteiro?
+b : real?
+c : frase?
+d : logico?
+e : letra?
+
+fun1 [2,2] (@a : inteiro) : inteiro
+{
+	a + 1 => a?
+	0 => [0,0]ret?
+	1 => [1,0]ret?
+	2 => [0,1]ret?
+	3 => [1,1]ret?
+}?
+programa
+{
+	b[2,2] : inteiro?
+	{
+		constante a : real?
+	}
+	para 10 => i de 0 fazer
+	{
+		escrever i?
+		escrever "\n"?
+	}
+	{
+		b : inteiro?
+	}
+	0 => a?
+	fazer fun1(a) => b?
+	escrever "a = "?
+	escrever a?
+	escrever "\n"?
+	de 0 => i para 2 fazer
+	{
+		de 0 => j para 2 fazer
+		{
+			escrever [i,j]b?
+			escrever "\n"?
+		}
+	}
+	escrever "\n"?
+}

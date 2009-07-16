@@ -1,0 +1,98 @@
+unidade( constante @num : inteiro ) : inteiro
+{
+	se(num > 0){
+		(num % 10) => ret?
+	}
+}?
+
+dezena( constante @num : inteiro ) : inteiro
+{
+	se(num > 10){
+		((num % 100) - fazer unidade(num)) / 10 => ret?
+	}
+}?
+
+centena( constante @num : inteiro ) : inteiro
+{
+	se(num > 100){
+		((num % 1000) - (10 * fazer dezena(num)) - fazer unidade(num)) / 100 => ret?
+	}
+}?
+
+milhar( constante @num : inteiro ) : inteiro
+{
+	se(num > 1000){
+		((num % 1000) - (100 * fazer centena(num)) - (10 * fazer dezena(num)) - fazer unidade(num)) / 1000 => ret?
+	}	
+}?
+
+programa
+{
+	escrever "Numeros Amigos: (abcd) | a*10^3 + b*10^2 + c*10^1 + d*10^0 = a^num + b^num + c^num + d^num\n"?
+	
+	re : real?
+	num : inteiro?
+	num => re?
+	
+	2 => num?
+	cont : inteiro?
+	
+	continua : logico?
+	certo => continua?
+	
+	i : inteiro?
+	cara : letra?
+	
+	a, b, c, d : inteiro?
+	
+	virg : logico?
+	errado => virg?
+	fazer{
+		fazer{
+			escrever "num <= "?
+			ler num?
+		}ate(num > 0)
+		0 => i?
+		0 => cont?
+		errado => continua?
+		enquanto ( i < 10000 ){
+			fazer unidade(i) => d?
+			fazer dezena(i) => c?
+			fazer centena(i) => b?
+			fazer milhar(i) => a?
+			se (i)
+				= (1000 * (i / 1000)) {
+					escrever "\nlimite "?
+					escrever i?
+					escrever ":\n"?
+					errado => virg?
+				}
+				= ((a ^ num) + (b ^ num) + (c ^ num) + (d ^ num)) {
+					se (virg) {
+						escrever ", "?
+					}
+					senao {
+						certo => virg?
+					}
+					escrever i?
+					cont + 1 => cont?
+				}
+			i + 1 => i?
+		}
+		escrever "Foram encontrados "?
+		escrever cont?
+		escrever " casos de numeros amigos\n"?
+		fazer{
+			escrever "novo teste? <s> / <n>"?
+			ler cara?
+		}ate(cara = 's' | cara = 'n')
+		se (cara = 'n') {
+			errado => continua?
+		}
+		senao {
+			certo => continua?
+		}
+	}
+	enquanto (continua)
+
+}
