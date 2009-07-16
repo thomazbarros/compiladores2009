@@ -15,6 +15,7 @@ typedef struct {
 #define SUBTR 1
 #define MULT 2
 #define DIV 3
+#define MOD 4
 
 int yyparse();
 void yyerror( const char* st );
@@ -35,6 +36,7 @@ E : E '+' T { realizar_operacao(SOMA,$$,$1,$3) ; }
 
 T : T '*' F  { realizar_operacao(MULT,$$,$1,$3)}
   | T '/' F  { realizar_operacao(DIV,$$,$1,$3); }
+  | T '%' F   {realizar_operacao(MULT,$$,$1,$3)}
   | F
   ;
 
