@@ -1,0 +1,23 @@
+programa 
+{
+	a : inteiro?
+	escrever "Entre com um numero inteiro:\n"?
+	ler a?
+
+	se (a > 0)
+	{
+		de 0 => i para a fazer
+		{
+			escrever i?
+			escrever "\n"?
+		}
+	}
+	senao
+	{
+		para 0 => i de a fazer
+		{
+			escrever i?
+			escrever "\n"?
+		}
+	}
+}

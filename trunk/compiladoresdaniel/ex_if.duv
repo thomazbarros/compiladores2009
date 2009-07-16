@@ -1,0 +1,14 @@
+programa
+{
+	a : real?
+
+	escrever "Escreva um numero real:"?
+	escrever "\n"?
+	ler a?
+
+	se(a)
+		> 0 { escrever "Maior que zero"? }
+		= 0 { escrever "Zero"? }
+		< 0 { escrever "Menor que zero"? }
+	escrever "\n"?
+}
