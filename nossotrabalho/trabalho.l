@@ -9,7 +9,7 @@ ID {CARACTER}({CARACTER}|{ALGARISMO})*
 
 IDENTACAO [\t\n ]
 
-% SENTENCA "'".*"'" 
+
 SENTENCA		\"([^\"\n]|(\\\"))*\"
 
 BINARIO "falso" | "verdadeiro"
@@ -19,7 +19,7 @@ BOOLEANO {BINARIO}
 
 %%
 
-{DELIM}		{}
+
 
 "int"		{ yylval.v = yytext; yylval.t = yytext; return TK_VAR_INT; }
 "real"		{ yylval.v = yytext; yylval.t = yytext; return TK_VAR_REAL; }
