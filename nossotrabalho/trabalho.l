@@ -9,7 +9,8 @@ ID {CARACTER}({CARACTER}|{ALGARISMO})*
 
 IDENTACAO [\t\n ]
 
-SENTENCA "'".*"'" 
+% SENTENCA "'".*"'" 
+SENTENCA		\"([^\"\n]|(\\\"))*\"
 
 BINARIO "falso" | "verdadeiro"
 BOOLEANO {BINARIO}
@@ -63,11 +64,11 @@ BOOLEANO {BINARIO}
 "true"		{ yylval.v = yytext; yylval.t = "bool"; return TK_BOOL; }
 "false"		{ yylval.v = yytext; yylval.t = "bool"; return TK_BOOL; }
 
-{ID}		{ yylval.v = yytext; return TK_ID; }
-{NUM}		{ yylval.v = yytext; yylval.t = "int"; return TK_NUM; }
+{IDENTIFICADOR}		{ yylval.v = yytext; return TK_ID; }
+{NATURAL}		{ yylval.v = yytext; yylval.t = "int"; return TK_NUM; }
 {REAL}		{ yylval.v = yytext; yylval.t = "real"; return TK_REAL; }
-{CHAR}		{ yylval.v = yytext; yylval.t = "char"; return TK_CHAR; }
-{STRING}	{ yylval.v = yytext; yylval.t = "string"; return TK_STRING; }
+{CARACTER}		{ yylval.v = yytext; yylval.t = "char"; return TK_CHAR; }
+{SENTENCA}	{ yylval.v = yytext; yylval.t = "string"; return TK_STRING; }
 
 .		{ return *yytext; }
 
