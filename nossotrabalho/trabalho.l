@@ -66,7 +66,6 @@ SENTENCA		\"([^\"\n]|(\\\"))*\"
 {REAL}		{ yylval.v = yytext; yylval.t = "real"; return TK_REAL; }
 {CARACTER}		{ yylval.v = yytext; yylval.t = "char"; return TK_CHAR; }
 {SENTENCA}	{ yylval.v = yytext; yylval.t = "string"; return TK_STRING; }
-
 .		{ return *yytext; }
 
 %%

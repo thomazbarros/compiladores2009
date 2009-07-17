@@ -4,7 +4,7 @@
 
 using namespace std;
 
-#include "funcoes.h"
+
 typedef struct {
 	string valor,codigo;
 	char tipo;
@@ -23,36 +23,36 @@ int yylex();
 
 %}
 
-%token TK_ID TK_INTEIRO TK_MAIS TK_STRING TK_FUNC TK_CARACTER TK_REAL
+%token TK_ID TK_NUM TK_STRING TK_CHAR TK_BOOL TK_REAL
 
 %%
 S : E { cout << $$.codigo << endl; }
   ;
 
-E : E '+' T { realizar_operacao(SOMA,$$,$1,$3) ; }
-  | E '-' T { realizar_operacao(SUBTR,$$,$1,$3) ; }
+E : E '+' T 
+  | E '-' T 
   | T
   ;
 
-T : T '*' F  { realizar_operacao(MULT,$$,$1,$3)}
-  | T '/' F  { realizar_operacao(DIV,$$,$1,$3); }
-  | T '%' F   {realizar_operacao(MULT,$$,$1,$3)}
+T : T '*' F    
+  | T '/' F  
+  | T '%' F  
   | F
   ;
 
 F : TK_ID     	 
-  | TK_INTEIRO 	
+  | TK_NUM 	
   | TK_STRING	
   | TK_REAL 	
-  | TK_CARACTER	
-  | TK_BOOLEANO   
+  | TK_CHAR	
+  | TK_BOOL   
   ;
 
-TIPO : TK_INTEIRO 	{ $$.codigo = $$.valor; }
-  | TK_STRING	        { $$.codigo = $$.valor; }
-  | TK_REAL 	        { $$.codigo = $$.valor; }
-  | TK_CARACTER	        { $$.codigo = $$.valor; }
-  | TK_BOOLEANO         { $$.codigo = $$.valor; }
+TIPO : TK_NUM 
+  | TK_STRING	        
+  | TK_REAL 	        
+  | TK_CHAR	        
+  | TK_BOOL         
   ;
 
 %%
