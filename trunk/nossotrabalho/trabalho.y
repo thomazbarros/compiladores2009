@@ -6,8 +6,7 @@ using namespace std;
 
 
 typedef struct {
-	string valor,codigo;
-	char tipo;
+	string valor,codigo,tipo;
 }atributos_compilador; 
 
 #define YYSTYPE atributos_compilador
@@ -51,7 +50,7 @@ F : TK_ID
 TIPO : TK_NUM 
   | TK_STRING	        
   | TK_REAL 	        
-  | TK_CHAR	        
+  | TK_CHAR      
   | TK_BOOL         
   ;
 
