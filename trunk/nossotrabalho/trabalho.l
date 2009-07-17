@@ -12,14 +12,11 @@ IDENTACAO [\t\n ]
 
 SENTENCA		\"([^\"\n]|(\\\"))*\"
 
-BINARIO "falso" | "verdadeiro"
-BOOLEANO {BINARIO}
-
-
 
 %%
 
 
+{IDENTACAO} {}
 
 "int"		{ yylval.v = yytext; yylval.t = yytext; return TK_VAR_INT; }
 "real"		{ yylval.v = yytext; yylval.t = yytext; return TK_VAR_REAL; }
