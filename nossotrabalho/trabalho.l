@@ -18,54 +18,54 @@ SENTENCA		\"([^\"\n]|(\\\"))*\"
 
 {IDENTACAO} {}
 
-"int"		{ yylval.v = yytext; yylval.t = yytext; return TK_VAR_INT; }
-"real"		{ yylval.v = yytext; yylval.t = yytext; return TK_VAR_REAL; }
-"char"		{ yylval.v = yytext; yylval.t = yytext; return TK_VAR_CHAR; }
-"string"	{ yylval.v = yytext; yylval.t = yytext; return TK_VAR_STRING; }
-"bool"		{ yylval.v = yytext; yylval.t = yytext; return TK_VAR_BOOL; }
-"void"		{ yylval.v = yytext; yylval.t = yytext; return TK_VAR_VOID; }
+"int"		{ yylval.valor = yytext; yylval.tipo = yytext; return TK_VAR_INT; }
+"real"		{ yylval.valor = yytext; yylval.tipo = yytext; return TK_VAR_REAL; }
+"char"		{ yylval.valor = yytext; yylval.tipo = yytext; return TK_VAR_CHAR; }
+"string"	{ yylval.valor = yytext; yylval.tipo = yytext; return TK_VAR_STRING; }
+"bool"		{ yylval.valor = yytext; yylval.tipo = yytext; return TK_VAR_BOOL; }
+"void"		{ yylval.valor = yytext; yylval.tipo = yytext; return TK_VAR_VOID; }
 
-"+"		{ yylval.v = yytext; return TK_OP_SOMA; }
-"-"		{ yylval.v = yytext; return TK_OP_SUB; }
-"*"		{ yylval.v = yytext; return TK_OP_MULT; }
-"/"		{ yylval.v = yytext; return TK_OP_DIV; }
-"%"		{ yylval.v = yytext; return TK_OP_REST; }
-"DIV"		{ yylval.v = yytext; return TK_OP_DIVINT; }
+"+"		{ yylval.valor = yytext; return TK_OP_SOMA; }
+"-"		{ yylval.valor = yytext; return TK_OP_SUB; }
+"*"		{ yylval.valor = yytext; return TK_OP_MULT; }
+"/"		{ yylval.valor = yytext; return TK_OP_DIV; }
+"%"		{ yylval.valor = yytext; return TK_OP_REST; }
+"DIV"		{ yylval.valor = yytext; return TK_OP_DIVINT; }
 
-"="		{ yylval.v = yytext; return TK_AT_IGUAL; }
+"="		{ yylval.valor = yytext; return TK_AT_IGUAL; }
 
-"=="		{ yylval.v = yytext; return TK_CMP_IGUAL; }
-"!="		{ yylval.v = yytext; return TK_CMP_DIF; }
-">"		{ yylval.v = yytext; return TK_CMP_MAIOR; }
-">="		{ yylval.v = yytext; return TK_CMP_MAIORIG; }
-"<"		{ yylval.v = yytext; return TK_CMP_MENOR; }
-"<="		{ yylval.v = yytext; return TK_CMP_MENORIG; }
+"=="		{ yylval.valor = yytext; return TK_CMP_IGUAL; }
+"!="		{ yylval.valor = yytext; return TK_CMP_DIF; }
+">"		{ yylval.valor = yytext; return TK_CMP_MAIOR; }
+">="		{ yylval.valor = yytext; return TK_CMP_MAIORIG; }
+"<"		{ yylval.valor = yytext; return TK_CMP_MENOR; }
+"<="		{ yylval.valor = yytext; return TK_CMP_MENORIG; }
 
-"!"		{ yylval.v = yytext; return TK_LOG_NOT; }
-"&&"		{ yylval.v = yytext; return TK_LOG_E; }
-"||"		{ yylval.v = yytext; return TK_LOG_OU; }
+"!"		{ yylval.valor = yytext; return TK_LOG_NOT; }
+"&&"		{ yylval.valor = yytext; return TK_LOG_E; }
+"||"		{ yylval.valor = yytext; return TK_LOG_OU; }
 
-"showTime"	{ yylval.v = yytext; return TK_FUNC_PRINC; }
-"facaSe"	{ yylval.v = yytext; return TK_FUNC_IF; }
-"numDeu"	{ yylval.v = yytext; return TK_FUNC_ELSE; }
-"facaPara"	{ yylval.v = yytext; return TK_FUNC_FOR; }
-"facaEnq"	{ yylval.v = yytext; return TK_FUNC_WHILE; }
-"{"		{ yylval.v = yytext; return TK_FUNC_START; }
-"}"		{ yylval.v = yytext; return TK_FUNC_END; }
-"func"		{ yylval.v = yytext; return TK_FUNC_FUNC; }
-"prot"		{ yylval.v = yytext; return TK_FUNC_PROT; }
-"voltaAew"	{ yylval.v = yytext; return TK_FUNC_RETURN; }
-"le"		{ yylval.v = yytext; return TK_FUNC_ENT; }
-"escreve"	{ yylval.v = yytext; return TK_FUNC_SAIDA; }
+"showTime"	{ yylval.valor = yytext; return TK_FUNC_PRINC; }
+"facaSe"	{ yylval.valor = yytext; return TK_FUNC_IF; }
+"numDeu"	{ yylval.valor = yytext; return TK_FUNC_ELSE; }
+"facaPara"	{ yylval.valor = yytext; return TK_FUNC_FOR; }
+"facaEnq"	{ yylval.valor = yytext; return TK_FUNC_WHILE; }
+"{"		{ yylval.valor = yytext; return TK_FUNC_START; }
+"}"		{ yylval.valor = yytext; return TK_FUNC_END; }
+"func"		{ yylval.valor = yytext; return TK_FUNC_FUNC; }
+"prot"		{ yylval.valor = yytext; return TK_FUNC_PROT; }
+"voltaAew"	{ yylval.valor = yytext; return TK_FUNC_RETURN; }
+"le"		{ yylval.valor = yytext; return TK_FUNC_ENT; }
+"escreve"	{ yylval.valor = yytext; return TK_FUNC_SAIDA; }
 
-"true"		{ yylval.v = yytext; yylval.t = "bool"; return TK_BOOL; }
-"false"		{ yylval.v = yytext; yylval.t = "bool"; return TK_BOOL; }
+"true"		{ yylval.valor = yytext; yylval.tipo = "bool"; return TK_BOOL; }
+"false"		{ yylval.valor = yytext; yylval.tipo = "bool"; return TK_BOOL; }
 
-{IDENTIFICADOR}		{ yylval.v = yytext; return TK_ID; }
-{NATURAL}		{ yylval.v = yytext; yylval.t = "int"; return TK_NUM; }
-{REAL}		{ yylval.v = yytext; yylval.t = "real"; return TK_REAL; }
-{CARACTER}		{ yylval.v = yytext; yylval.t = "char"; return TK_CHAR; }
-{SENTENCA}	{ yylval.v = yytext; yylval.t = "string"; return TK_STRING; }
+{IDENTIFICADOR}		{ yylval.valor = yytext; return TK_ID; }
+{NATURAL}		{ yylval.valor = yytext; yylval.tipo = "int"; return TK_NUM; }
+{REAL}		{ yylval.valor = yytext; yylval.tipo = "real"; return TK_REAL; }
+{CARACTER}		{ yylval.valor = yytext; yylval.tipo = "char"; return TK_CHAR; }
+{SENTENCA}	{ yylval.valor = yytext; yylval.tipo = "string"; return TK_STRING; }
 .		{ return *yytext; }
 
 %%
