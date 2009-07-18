@@ -17,7 +17,13 @@ int yylex();
 
 %}
 
-%token TK_ID TK_INTEIRO TK_MAIS TK_STRING TK_FUNC TK_CARACTER TK_REAL
+%token TK_VAR_INT TK_VAR_REAL TK_VAR_CHAR TK_VAR_STRING TK_VAR_BOOL TK_VAR_VOID
+%token TK_OP_SOMA TK_OP_SUB TK_OP_MULT TK_OP_DIV TK_OP_REST TK_OP_DIVINT 
+%token TK_AT_IGUAL
+%token TK_CMP_IGUAL TK_CMP_DIF TK_CMP_MAIOR TK_CMP_MAIORIG TK_CMP_MENOR TK_CMP_MENORIG
+%token TK_LOG_NOT TK_LOG_E TK_LOG_OU
+%token TK_FUNC_PRINC TK_FUNC_IF TK_FUNC_ELSE TK_FUNC_FOR TK_FUNC_WHILE TK_FUNC_START TK_FUNC_END TK_FUNC_FUNC TK_FUNC_PROT TK_FUNC_RETURN TK_FUNC_ENT TK_FUNC_SAIDA
+%token TK_BOOL TK_ID TK_NUM TK_REAL TK_CHAR TK_STRING   
 
 %%
 S : VG S
@@ -28,49 +34,49 @@ S : VG S
 VG : tipo LID;
   ;
 
-tipo : TK_ID     	{$$.codigo = $$.valor;} 
-  | TK_INTEIRO 	{$$.codigo = $$.valor;}
-  | TK_STRING	{$$.codigo = $$.valor;}
-  | TK_REAL 	{$$.codigo = $$.valor;}
-  | TK_CARACTER	{$$.codigo = $$.valor;}
-  | '(' E ')' { $$.codigo = $2.codigo; }  
+tipo : TK_ID    
+  | TK_NUM 	
+  | TK_STRING	
+  | TK_REAL 	
+  | TK_CARACTER	
+  | '(' E ')'
   ;
 
-LID : V,LID
+LID : V ',' LID
   | V
   ; 
 
-V : id
-  | id [num]
-  | id [num][num]
+V : TK_ID
+  | TK_ID '[' TK_NUM ']'
+  | TK_ID '[' TK_NUM ']' '[' TK_NUM ']'
   ;
 
-funcao : TF id (LParam) corpo
-  | TF id (LParam);
+funcao : TF TK_ID '(' LParam ')' corpo
+  | TF TK_ID '(' LParam ')' ';'
   ;
 
-TF : void
+TF : TK_VAR_VOID
    | tipo
 
 LParam :  
   | Params
   ; 
 
-Params : Param , Params
+Params : Param ',' Params
   | Param
   ;
 
-Param : tipo id
-  | tipo * id
+Param : tipo TK_ID
+  | tipo '*' TK_ID
   ;
 
-main : int main() corpo
+main : TK_VAR_INT TK_FUNC_PRINC corpo
   ;
 
-corpo : { VL CMDS}
+corpo : TK_FUNC_START VL CMDS TK_FUNC_END
   ;
 
-VL : tipo LID; VL
+VL : tipo LID ';' VL
   |
   ;
 
@@ -84,7 +90,7 @@ CMD : CMD_ATRIB
   | CMD_ENTRADA
   | CMD_SAIDA
   | CMD_RETURN
-  | ;
+  | ';'
   | BLOCO
   ;
 
@@ -92,86 +98,86 @@ CMDS : CMD CMDS
   |
   ;
 
-BLOCO : {CMDS}
+BLOCO : TK_FUNC_START CMDS TK_FUNC_END
 
-CMD_ATRIB : VA = E;
-  | VA += E;
-  | VA =- E
+CMD_ATRIB : VA TK_AT_IGUAL E;
+  | VA "+=" E;
+  | VA "=-" E
   ;
 
-VA : id
-  | id [E]
-  | id [E][E]
+VA : TK_ID
+  | TK_ID '[' E ']'
+  | TK_ID '['E ']' '[' E ']'
   ;
  
-CMD_IF : if (E) CMD
-  | if (E) CMD else CMD
+CMD_IF : TK_FUNC_IF '(' E ')' CMD
+  | TK_FUNC_IF '(' E ')' CMD TK_FUNC_ELSE CMD
   ;
 
-CMD_FOR : for(E;E;E) CMD
+CMD_FOR : TK_FUNC_FOR '(' E ';' E ';' E ')' CMD
   ;
 
-CMD_WHILE : while(E) CMD
+CMD_WHILE : TK_FUNC_WHILE '(' E ')' CMD
   ;
 
-CMD_DO_WHILE : do CMD while(E);
+CMD_DO_WHILE : "do" CMD "while" '(' E ')' ';'
   ;
 
-CMD_SWITCH : switch (E) {LABELS DEFAULT}
+CMD_SWITCH : "switch" '(' E ')' '{' LABELS DEFAULT '}'
   ;
 
 LABELS : LABEL LABELS
   | CMD LABELS
-  | break LABELS
+  | "break" LABELS
   | 
   ;
 
-LABEL : num :
+LABEL : TK_NUM ':'
   ;
 
-DEFAULT : default : CMDS
+DEFAULT : "default" ':' CMDS
   ;
  
-CMD_FUNC : id(L_ARGS);
+CMD_FUNC : TK_ID '(' L_ARGS ')' ';'
 
 L_ARGS : 
   | ARGS
   ;
 
-ARGS : E.ARGS
+ARGS : E'.'ARGS
   | E
   ;
 
-CMD_ENTRADA : cin >> id;
-  | cin >> id [E];
-  | cin >> id [E][E];
+CMD_ENTRADA : TK_FUNC_ENT ">>" TK_ID ';'
+  | TK_FUNC_ENT ">>" TK_ID '[' E ']' ';'
+  | TK_FUNC_ENT ">>" TK_ID '[' E ']' '[' E ']' ';'
   ;
 
-CMD_SAIDA : cout << E
-  | cout << endl
-  | cout << E << endl
+CMD_SAIDA : TK_FUNC_SAIDA "<<" E
+  | TK_FUNC_SAIDA "<<" "endl"
+  | TK_FUNC_SAIDA "<<" E "<<" "endl"
   ;
 
-E : E + T
-  | E - T
+E : E TK_OP_SOMA T
+  | E TK_OP_SUB T
   | T
   ;
 
-T : T * F
-  | T / F
+T : T TK_OP_MULT F
+  | T TK_OP_DIV F
+  | T TK_OP_REST F
+  | T TK_OP_DIVINT F
   | F
   ;
 
-F : +F
-  | -F
-  | !F
-  | id
-  | num
-  | (E)
-  | id(E)
-  | id[E]
-  | id[E][E]
-  | funcao
+F : TK_LOG_NOT F
+  | TK_ID
+  | TK_NUM
+  | '(' E ')'
+  | TK_ID '(' E ')'
+  | TK_ID '[' E ']'
+  | TK_ID '[' E ']' '[' E ']'
+  | TK_FUNC_FUNC
   ;
 
 %%
