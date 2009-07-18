@@ -27,18 +27,17 @@ int yylex();
 %% 
 S : VG S 
   | funcao S 
-  | main 	
+  | main
   ;
 
 VG : tipo LID;
   ;
 
-tipo : TK_ID    
-  | TK_NUM 	
-  | TK_STRING	
-  | TK_REAL 	
-  | TK_CHAR
-  | TK_BOOL	
+tipo :  TK_VAR_INT 	
+  | TK_VAR_STRING	
+  | TK_VAR_REAL	
+  | TK_VAR_CHAR
+  | TK_VAR_BOOL	
   | '(' E ')'
   ;
 
@@ -70,13 +69,13 @@ Param : tipo TK_ID
   | tipo '*' TK_ID
   ;
 
-main : TK_VAR_INT TK_FUNC_PRINC corpo 
+main : TK_VAR_INT TK_FUNC_PRINC corpo {yyerror("main :P");}
   ;
 
-corpo : TK_FUNC_START VL CMDS TK_FUNC_END
+corpo : TK_FUNC_START VL CMDS TK_FUNC_END {yyerror("corpo");}
   ;
 
-VL : tipo LID ';' VL
+VL : tipo LID ';' VL {yyerror("variaveis");}
   |
   ;
 
@@ -187,7 +186,10 @@ int yyparse();
 
 void yyerror( const char* st )
 {
-  puts( st );
+  // puts( st );
+	cout << st <<";" << endl;
+      //  exit(1);
+
 }
 
 int main( int argc, char* argv[] )
