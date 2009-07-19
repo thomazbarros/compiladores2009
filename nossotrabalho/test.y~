@@ -1,29 +1,11 @@
 %{
 #include <string>
 #include <iostream>
-#include <map>
-#include <vector>
-#include <deque>
-#include <stack>
+
 using namespace std;
 
 typedef struct {
-    string base;
-    int n_dim;
-    int d[2];
-    
-    void modifica_valores(string nova_base, int novo_n_dim = 0, int d0 = 1, int d1 =1)
-    {
-	base = nova_base;
-	n_dim = novo_n_dim;
-	d[0] = d0;
-	d[1] = d1;
-    }
-}estrutura_tipos; 
-
-typedef struct {
-    estrutura_tipos tipo;
-    string valor,codigo;
+	string valor,codigo,tipo;
 }atributos_compilador; 
 
 #define YYSTYPE atributos_compilador
@@ -45,7 +27,7 @@ int yylex();
 %% 
 S : VG S 
   | funcao S 
-  | main 
+  | main
   ;
 
 VG : tipo LID;
@@ -68,13 +50,8 @@ V : TK_ID
   | TK_ID '[' TK_NUM ']' '[' TK_NUM ']'
   ;
 
-funcao : TF FUN_ID '(' LParam ')' corpo
-  | TF FUN_ID '(' LParam ')' ';'
-  ;
-
-FUN_ID : TK_ID
-  | TK_ID '[' TK_NUM ']'
-  | TK_ID '[' TK_NUM ']' '[' TK_NUM ']'
+funcao : TF TK_ID '(' LParam ')' corpo
+  | TF TK_ID '(' LParam ')' ';'
   ;
 
 TF : TK_VAR_VOID
@@ -92,13 +69,13 @@ Param : tipo TK_ID
   | tipo '*' TK_ID
   ;
 
-main : TK_VAR_INT TK_FUNC_PRINC corpo
+main : TK_VAR_INT TK_FUNC_PRINC corpo {yyerror("main :P");}
   ;
 
-corpo : TK_FUNC_START VL CMDS TK_FUNC_END
+corpo : TK_FUNC_START VL CMDS TK_FUNC_END {yyerror("corpo");}
   ;
 
-VL : tipo LID ';' VL 
+VL : tipo LID ';' VL {yyerror("variaveis");}
   |
   ;
 
@@ -132,30 +109,24 @@ VA : TK_ID
   | TK_ID '[' E ']' '[' E ']'
   ;
  
-CMD_IF : TK_FUNC_IF '(' TEST ')' CMD{
-		gera_if($$, $3, $5);
-	  }
-  | TK_FUNC_IF '(' TEST ')' CMD TK_FUNC_ELSE CMD{
-		gera_if_else($$, $3, $5, $7);
-    }
+CMD_IF : TK_FUNC_IF '(' TEST ')' CMD
+  | TK_FUNC_IF '(' TEST ')' CMD TK_FUNC_ELSE CMD
   ;
 
-CMD_FOR : TK_FUNC_FOR '(' TEST ';' TEST ';' TEST ')' CMD{
-			gera-for($$, $3, $5, $7, $9);
-	   }
+CMD_FOR : TK_FUNC_FOR '(' E ';' E ';' E ')' CMD
   ;
 
 CMD_WHILE : TK_FUNC_WHILE '(' TEST ')' CMD{
-			gera_while($$, $3, $5);
+			gerawhile($$, $3, $5);
 	     }
   ;
 
 CMD_DO_WHILE : "do" CMD "while" '(' TEST ')' ';'{
-			gera_do_while($$, $2, $5);
+			geradowhile($$, $2, $5);
 		 }
   ;
 
-CMD_SWITCH : "switch" '(' E ')' '{' LABELS DEFAULT '}'
+CMD_SWITCH : "switch" '(' TEST ')' '{' LABELS DEFAULT '}'
   ;
 
 LABELS : LABEL LABELS

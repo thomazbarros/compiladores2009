@@ -58,8 +58,8 @@ SENTENCA		\"([^\"\n]|(\\\"))*\"
 "le"		{ yylval.valor = yytext; return TK_FUNC_ENT; }
 "escreve"	{ yylval.valor = yytext; return TK_FUNC_SAIDA; }
 
-"true"		{ yylval.valor = yytext; yylval.tipo.base = "bool"; return TK_BOOL; }
-"false"		{ yylval.valor = yytext; yylval.tipo.base = "bool"; return TK_BOOL; }
+"true"		{ yylval.valor = yytext; yylval.tipo = "bool"; return TK_BOOL; }
+"false"		{ yylval.valor = yytext; yylval.tipo = "bool"; return TK_BOOL; }
 
 {IDENTIFICADOR}		{ yylval.valor = yytext; return TK_ID; }
 {NATURAL}		{ yylval.valor = yytext; yylval.tipo.base = "int"; return TK_NUM; }
