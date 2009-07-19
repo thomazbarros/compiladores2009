@@ -109,20 +109,26 @@ VA : TK_ID
   | TK_ID '[' E ']' '[' E ']'
   ;
  
-CMD_IF : TK_FUNC_IF '(' TEST ')' CMD
-  | TK_FUNC_IF '(' TEST ')' CMD TK_FUNC_ELSE CMD
+CMD_IF : TK_FUNC_IF '(' TEST ')' CMD{
+		gera_if($$, $3, $5);
+	  }
+  | TK_FUNC_IF '(' TEST ')' CMD TK_FUNC_ELSE CMD{
+		gera_if_else($$, $3, $5, $7);
+    }
   ;
 
-CMD_FOR : TK_FUNC_FOR '(' E ';' E ';' E ')' CMD
+CMD_FOR : TK_FUNC_FOR '(' TEST ';' TEST ';' TEST ')' CMD{
+			gera-for($$, $3, $5, $7, $9);
+	   }
   ;
 
 CMD_WHILE : TK_FUNC_WHILE '(' TEST ')' CMD{
-			gerawhile($$, $3, $5);
+			gera_while($$, $3, $5);
 	     }
   ;
 
 CMD_DO_WHILE : "do" CMD "while" '(' TEST ')' ';'{
-			geradowhile9$$, $2, $5);
+			gera_do_while($$, $2, $5);
 		 }
   ;
 
