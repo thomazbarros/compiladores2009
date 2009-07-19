@@ -5,7 +5,22 @@
 using namespace std;
 
 typedef struct {
-	string valor,codigo,tipo;
+    string base;
+    int n_dim;
+    int d[2];
+    
+    void modifica_valores(string nova_base, int novo_n_dim, int d0, int d1)
+    {
+	base = nova_base;
+	n_dim = novo_n_dim;
+	d[0] = d0;
+	d[1] = d1;
+    }
+}estrutura_tipos; 
+
+typedef struct {
+    estrutura_tipos tipo;
+    string valor,codigo;
 }atributos_compilador; 
 
 #define YYSTYPE atributos_compilador
@@ -27,7 +42,7 @@ int yylex();
 %% 
 S : VG S 
   | funcao S 
-  | main
+  | main 
   ;
 
 VG : tipo LID;
@@ -50,8 +65,13 @@ V : TK_ID
   | TK_ID '[' TK_NUM ']' '[' TK_NUM ']'
   ;
 
-funcao : TF TK_ID '(' LParam ')' corpo
-  | TF TK_ID '(' LParam ')' ';'
+funcao : TF FUN_ID '(' LParam ')' corpo
+  | TF FUN_ID '(' LParam ')' ';'
+  ;
+
+FUN_ID : TK_ID
+  | TK_ID '[' TK_NUM ']'
+  | TK_ID '[' TK_NUM ']' '[' TK_NUM ']'
   ;
 
 TF : TK_VAR_VOID
@@ -69,13 +89,13 @@ Param : tipo TK_ID
   | tipo '*' TK_ID
   ;
 
-main : TK_VAR_INT TK_FUNC_PRINC corpo {yyerror("main :P");}
+main : TK_VAR_INT TK_FUNC_PRINC corpo
   ;
 
-corpo : TK_FUNC_START VL CMDS TK_FUNC_END {yyerror("corpo");}
+corpo : TK_FUNC_START VL CMDS TK_FUNC_END
   ;
 
-VL : tipo LID ';' VL {yyerror("variaveis");}
+VL : tipo LID ';' VL 
   |
   ;
 
