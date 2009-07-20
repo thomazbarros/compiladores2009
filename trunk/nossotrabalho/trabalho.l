@@ -57,6 +57,7 @@ SENTENCA		\"([^\"\n]|(\\\"))*\"
 "voltaAew"	{ yylval.valor = yytext; return TK_FUNC_RETURN; }
 "le"		{ yylval.valor = yytext; return TK_FUNC_ENT; }
 "escreve"	{ yylval.valor = yytext; return TK_FUNC_SAIDA; }
+"escrevepl"	{ yylval.valor = yytext; return TK_FUNC_SAIDA_PL; }
 
 "true"		{ yylval.valor = yytext; yylval.tipo.base = "bool"; return TK_BOOL; }
 "false"		{ yylval.valor = yytext; yylval.tipo.base = "bool"; return TK_BOOL; }

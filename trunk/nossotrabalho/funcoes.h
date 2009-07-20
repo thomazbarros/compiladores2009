@@ -685,8 +685,8 @@ void gera_vetor(variavel &n, variavel n2, atributos_compilador n3)
 {
 	n.tipo = n2.tipo;
 	n.ndim = 1;
-	n.dim1 = n3.valor;
-	n.codigo = n2.valor + "_" + int_to_src(nivel--) + "[" + n3.valor + "] \n;";
+	n.dim1 = n3.valor; 
+	n.codigo = n2.valor + "_" + int_to_src(nivel--) + "[" + n3.valor + "]; \n";
 }
 
 void gera_matriz(variavel &n, variavel n2, atributos_compilador n3, atributos_compilador n4)
@@ -696,5 +696,31 @@ void gera_matriz(variavel &n, variavel n2, atributos_compilador n3, atributos_co
 	int n5 = n3.valor * n4.valor;
 	n.dim1 = n3.valor;
 	n.dim2 = n4.valor;
-	n.codigo = n2.valor + "_" + int_to_src(nivel--) + "[" + n5 + "] \n;";
+	n.codigo = n2.valor + "_" + int_to_src(nivel--) + "[" + n5 + "]; \n";
+}
+
+void gera_entrada(atributos_compilador &esquerda, atributos_compilador &terceiro)
+{
+	esquerda.codigo = "cin >> "+ terceiro.valor +";\n"
+}
+
+void gera_saida(atributos_compilador &esquerda , atributos_compilador &terceiro = Null, bool pulaLinha = false, bool vazio = false)
+{
+	if(pulaLinha == true && vazio == true)
+	{
+		esquerda.codigo = "cout << endl;\n";
+	}
+	else
+	{
+		if(terceiro == Null)
+		{
+			yyerror("Erro na saida ");		
+		}
+		esquerda.codigo = "cout <<" + terceiro.valor + ";\n";  
+
+		if(pulaLinha == true)
+		{
+			esquerda.codigo = "cout <<" + terceiro.valor + "<< endl;\n";	
+		}
+	}
 }

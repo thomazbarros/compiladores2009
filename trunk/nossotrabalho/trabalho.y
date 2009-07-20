@@ -19,9 +19,14 @@ int yylex();
 %token TK_AT_IGUAL
 %token TK_CMP_IGUAL TK_CMP_DIF TK_CMP_MAIOR TK_CMP_MAIORIG TK_CMP_MENOR TK_CMP_MENORIG
 %token TK_LOG_NOT TK_LOG_E TK_LOG_OU
-%token TK_FUNC_PRINC TK_FUNC_IF TK_FUNC_ELSE TK_FUNC_FOR TK_FUNC_WHILE TK_FUNC_START TK_FUNC_END TK_FUNC_FUNC TK_FUNC_PROT TK_FUNC_RETURN TK_FUNC_ENT TK_FUNC_SAIDA
+%token TK_FUNC_PRINC TK_FUNC_IF TK_FUNC_ELSE TK_FUNC_FOR TK_FUNC_WHILE TK_FUNC_START TK_FUNC_END TK_FUNC_FUNC TK_FUNC_PROT TK_FUNC_RETURN TK_FUNC_ENT TK_FUNC_SAIDA TK_FUNC_SAIDA_PL
 %token TK_BOOL TK_ID TK_NUM TK_REAL TK_CHAR TK_STRING   
 %token TK_N TK_TEST
+%left '+' '-'
+%left '*' '/'
+%left '%'
+%right '+='
+%
 
 %% 
 S : VG S 
@@ -128,7 +133,6 @@ CMD : CMD_ATRIB
   | CMD_WHILE
   | CMD_DO_WHILE
   | CMD_SWITCH
-  | CMD_FUNC
   | CMD_ENTRADA
   | CMD_SAIDA
   | TK_FUNC_RETURN
@@ -183,8 +187,6 @@ LABEL : TK_NUM ':'
 DEFAULT : "default" ':' CMDS
   ;
  
-CMD_FUNC : TK_ID '(' L_ARGS ')' ';'
-
 L_ARGS : 
   | ARGS
   ;
@@ -193,14 +195,12 @@ ARGS : E'.'ARGS
   | E
   ;
 
-CMD_ENTRADA : TK_FUNC_ENT ">>" TK_ID ';'
-  | TK_FUNC_ENT ">>" TK_ID '[' E ']' ';'
-  | TK_FUNC_ENT ">>" TK_ID '[' E ']' '[' E ']' ';'
+CMD_ENTRADA : TK_FUNC_ENT '(' F ')' ';' { gera_entrada($$,$3)}
   ;
 
-CMD_SAIDA : TK_FUNC_SAIDA "<<" E
-  | TK_FUNC_SAIDA "<<" "endl"
-  | TK_FUNC_SAIDA "<<" E "<<" "endl"
+CMD_SAIDA : TK_FUNC_SAIDA '(' E ')' ';' {gera_saida($$,$3);} 
+  | TK_FUNC_SAIDA_PL '(' ')' ';' {gera_saida($$,true,true);}
+  | TK_FUNC_SAIDA_PL '(' E ')' ';' {gera_saida($$,$3,true);}
   ;
 
 E : E TK_OP_SOMA T {realizar_operacao(SOMA,$$,$1,$3);}
