@@ -212,7 +212,7 @@ void tipo_resultado(int tipo, string &primeiro, string &segundo)
 
 }
 
-void gera_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo, atributos_compilador &quarto)
+void gera_nome_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo, atributos_compilador &quarto)
 {
     esquerda.valor = segundo.valor;
     esquerda.codigo = primeiro.codigo;
@@ -557,7 +557,7 @@ void expressoes_logicas(string logica,atributos_compilador &esquerda, atributos_
 void sobe_nivel()
 {
 	total_niveis++;
-	nivel_atual++;
+	nivel_atual = total_niveis;
 	var.push_back(*(new map<string, variavel*>));
 	
 }
@@ -641,4 +641,12 @@ void declara_main(atributos_compilador &esquerda, atributos_compilador &segundo)
 	
 	esquerda.codigo = "int main(void)\n{\nint _ret = 0;\n" + segundo.codigo + "return _ret;\n}\n";
 	var.pop_back();
+}
+
+void gera_codigo_funcao(atributos_compilador &esquerda, atributos_compilador &segundo){
+	
+	esquerda.codigo = segundo.codigo + "return _ret;\n}\n";
+	esquerda.valor = primeiro.valor;
+	esquerda.tipo = primeiro.tipo;
+	desce_nivel();
 }
