@@ -16,6 +16,45 @@ ordem das operacoes : SOMA,SUBTRACAO,MULTIPLICACAO,DIVISAO,MODULO
 ordem dos tipos : int, double, char, string, bool
 vazio = ERRO 
 */
+typedef struct {
+    string base;
+    int n_dim;
+    int d[2];
+    
+    void modifica_valores(string nova_base, int novo_n_dim = 0, int d0 = 1, int d1 =1)
+    {
+	base = nova_base;
+	n_dim = novo_n_dim;
+	d[0] = d0;
+	d[1] = d1;
+    }
+}estrutura_tipos; 
+
+typedef struct {
+    estrutura_tipos tipo;
+    string valor,codigo;
+}atributos_compilador; 
+
+typedef struct 
+{
+	string nome;
+	Tipo tipo;
+	Variavel(string nome, string base, int ndim=0, int dim1=1, int dim2=1) : nome(nome), tipo(base, ndim, dim1, dim2) {}
+}variavel;
+
+typedef struct
+{
+	string nome;
+	Tipo tipo;
+	vector<Tipo> param;
+	Funcao(string nome, string base, int ndim=0, int dim1=1, int dim2=1) : nome(nome), tipo(base, ndim, dim1, dim2) {}
+}funcao;
+
+deque<map <string, variavel*> > var;
+map<string, funcao*> func_global;
+int nlinha = 1;
+int nivel = 1;
+int total_niveis = 0;
 int numLinha = 1;
 map<string, unsigned int> contador;
 
@@ -495,7 +534,7 @@ void expressoes_logicas(string logica,atributos_compilador &esquerda, atributos_
 	if(primeiro == NULL || terceiro == NULL)
 	{
 		yyerror("Argumentos invalidos para uma expressao regular");
-	}
+	}*(new map<string, Variavel*>)
 
 	if(primeiro.tipo.base != "bool" || terceiro.tipo.base != "bool" || primeiro.tipo.ndim > 0 || seguinte.tipo.ndim > 0)
 		yyerror("Tipos invalidos para operacoes logicas.");
@@ -515,3 +554,15 @@ void expressoes_logicas(string logica,atributos_compilador &esquerda, atributos_
 	yyerror("Simbolo desconhecido :"+logica);
 }*/
 
+void sobe_nivel()
+{
+	total_niveis++;
+	nivel_atual++;
+	var.push_back(*(new map<string, variavel*>));
+	
+}
+void desce_nivel()
+{
+	nivel_atual--;
+	var.pop_back();
+}
