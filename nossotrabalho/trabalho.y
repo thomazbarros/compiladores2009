@@ -3,46 +3,8 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include "funcoes.h"
 using namespace std;
-
-typedef struct {
-    string base;
-    int n_dim;
-    int d[2];
-    
-    void modifica_valores(string nova_base, int novo_n_dim = 0, int d0 = 1, int d1 =1)
-    {
-	base = nova_base;
-	n_dim = novo_n_dim;
-	d[0] = d0;
-	d[1] = d1;
-    }
-}estrutura_tipos; 
-
-typedef struct {
-    estrutura_tipos tipo;
-    string valor,codigo;
-}atributos_compilador; 
-
-typedef struct 
-{
-	string nome;
-	Tipo tipo;
-	Variavel(string nome, string base, int ndim=0, int dim1=1, int dim2=1) : nome(nome), tipo(base, ndim, dim1, dim2) {}
-}variavel;
-
-typedef struct
-{
-	string nome;
-	Tipo tipo;
-	vector<Tipo> param;
-	Funcao(string nome, string base, int ndim=0, int dim1=1, int dim2=1) : nome(nome), tipo(base, ndim, dim1, dim2) {}
-}funcao;
-
-deque<map <string, variavel*> > var;
-map<string, funcao*> func_global;
-//map<string, unsigned int> conta_temp_var;
-int nlinha = 1;
 
 #define YYSTYPE atributos_compilador
 
@@ -290,7 +252,6 @@ F : TK_LOG_NOT F
   | TK_ID '(' E ')'
   | TK_ID '[' E ']'
   | TK_ID '[' E ']' '[' E ']'
-  | TK_FUNC_FUNC
   | USA_FUNC
   ;
 
