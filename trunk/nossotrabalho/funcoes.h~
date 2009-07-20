@@ -437,8 +437,22 @@ void cria_id(atributos_compilador &esquerda,atributos_compilador &primeiro)
 	esquerda.valor =  "_" + primeiro.valor; 
 	esquerda.codigo = "";
 }
+void negacao(string logica,atributos_compilador &esquerda, atributos_compilador &segundo)
+{
+	esquerda.valor = cria_temp_var("bool");
+	if(logica != "!")	
+	{	
+		yyerror("Simbolo desconhecido :"+logica);		
+	}
 
-void comparacao(string simbolo)
+	if(segundo.tipo.base != "bool" && segundo.tipo.n_dim < 1)
+	{
+		yyerror("Comparacao invalida.");
+	}
+	esquerda.codigo = esquerda.valor + " = " + logica + segundo.codigo + ";\n";
+}
+
+/*void comparacao(string simbolo)
 {
 	if(simbolo == ">") 
 	{
@@ -481,6 +495,7 @@ void expressoes_logicas(string logica,atributos_compilador &esquerda, atributos_
 	{
 		yyerror("Argumentos invalidos para uma expressao regular");
 	}
+
 	if(primeiro.tipo.base != "bool" || terceiro.tipo.base != "bool" || primeiro.tipo.ndim > 0 || seguinte.tipo.ndim > 0)
 		yyerror("Tipos invalidos para operacoes logicas.");
 
@@ -497,5 +512,5 @@ void expressoes_logicas(string logica,atributos_compilador &esquerda, atributos_
 	}	
 	
 	yyerror("Simbolo desconhecido :"+logica);
-}
+}*/
 
