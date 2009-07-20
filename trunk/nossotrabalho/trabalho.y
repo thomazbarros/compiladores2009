@@ -49,8 +49,11 @@ V : TK_ID
   | TK_ID '[' TK_NUM ']' '[' TK_NUM ']'
   ;
 
-funcao : TF FUN_ID '(' LParam ')' corpo {gera_funcao($$,$1,$2,$4); }
-  | TF FUN_ID '(' LParam ')' ';' {gera_funcao($$,$1,$2,$4); }
+funcao : nome_funcao corpo {gera_codigo_funcao($$,$1,$2)}
+  | nome_funcao ';'
+  ;
+
+nome_funcao : TF FUN_ID '(' LParam ')' { gera_nome_funcao($$,$1,$2,$4); }
   ;
 
 FUN_ID : ID
