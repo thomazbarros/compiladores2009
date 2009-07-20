@@ -241,7 +241,7 @@ int strtoint(String st)
 	return n;
 }
 
-void gera_if(atribuos_compilador n, atributos_compilador n2, atributos_compilador n3)
+void gera_if(atribuos_compilador &n, atributos_compilador n2, atributos_compilador n3)
 {
 	n.valor = "";
 	n.tipo.modifica_valores("");
@@ -250,7 +250,7 @@ void gera_if(atribuos_compilador n, atributos_compilador n2, atributos_compilado
 	n.codigo = inicio + ":;\n" + "if( " + n2.valor + " ) goto " + n3.valor + ";\n";
 }
 
-void gera_if_else(atribuos_compilador n, atributos_compilador n2, atributos_compilador n3, atributos_compilador n4)
+void gera_if_else(atribuos_compilador &n, atributos_compilador n2, atributos_compilador n3, atributos_compilador n4)
 {
 	n.valor = "";
 	n.tipo.modifica_valores("");
@@ -260,7 +260,7 @@ void gera_if_else(atribuos_compilador n, atributos_compilador n2, atributos_comp
 	n.codigo = inicio + ":;\n" + "if( " + n2.valor + " ) goto " + n4.valor + ";\n";
 }
 
-void gera_while(atribuos_compilador n, atributos_compilador n2, atributos_compilador n3)
+void gera_while(atribuos_compilador &n, atributos_compilador n2, atributos_compilador n3)
 {
 	n.valor = "";
 	n.tipo.modifica_valores("");
@@ -271,7 +271,7 @@ void gera_while(atribuos_compilador n, atributos_compilador n2, atributos_compil
 	n.codigo += n3.codigo + "goto " + inicio + ";\n" + fim + ":;\n";
 }
 
-void gera_do_while(atribuos_compilador n, atributos_compilador n2, atributos_compilador n3)
+void gera_do_while(atribuos_compilador &n, atributos_compilador n2, atributos_compilador n3)
 {
 	n.valor = "";
 	n.tipo.modifica_valores("");
@@ -280,7 +280,7 @@ void gera_do_while(atribuos_compilador n, atributos_compilador n2, atributos_com
 	n.codigo = inicio + ":;\n" + n2.codigo + n3.codigo + "if( " + n3.valor + " ) goto " + inicio + ";\n";
 }
 
-void gera_for(atribuos_compilador n, atributos_compilador n2, atributos_compilador n3, atributos-compilador, n4,
+void gera_for(atribuos_compilador &n, atributos_compilador n2, atributos_compilador n3, atributos_compilador n4,
 atributos_compilador n5)
 {
 	n.valor = "";
@@ -328,7 +328,7 @@ string transforma_variavel(const string &n)
 	return n2;
 }
 
-void gera_n(string n, atributos_compilador n2, atributos_compilador n3, atributos_compilador n4)
+void gera_n(string n, atributos_compilador &n2, atributos_compilador n3, atributos_compilador n4)
 {
 	if(n3.tipo.base != n4.tipo.base){
 		if(n3.tipo.base == "int"){
@@ -353,4 +353,28 @@ void gera_test(string n, atributos_compilador &n2, atributos_compilador  n3, atr
 
 	n2.valor = transforma_variavel("bool");
 	n2.codigo = n3.codigo + n4.codigo + n2.valor + " = " + n3.valor + ' ' + n + ' ' + n4.valor + ";\n";
+}
+
+void gera_variavel(variavel &n, variavel n2)
+{
+	n = n2;
+	n.codigo = n2.valor + "_"  + int_to_src(nivel--) + ";\n";
+}
+
+void gera_vetor(variavel &n, variavel n2, atributos_compilador n3)
+{
+	n.tipo = n2.tipo;
+	n.ndim = 1;
+	n.dim1 = n3.valor;
+	n.codigo = n2.valor + "_" + int_to_src(nivel--) + "[" + n3.valor + "] \n;";
+}
+
+void gera_matriz(variavel &n, variavel n2, atributos_compilador n3, atributos_compilador n4)
+{
+	n.tipo = n2.tipo;
+	n.ndim = 2;
+	int n5 = n3.valor * n4.valor;
+	n.dim1 = n3.valor;
+	n.dim2 = n4.valor;
+	n.codigo = n2.valor + "_" + int_to_src(nivel--) + "[" + n5 + "] \n;";
 }
