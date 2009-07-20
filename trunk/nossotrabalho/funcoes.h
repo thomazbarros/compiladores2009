@@ -86,7 +86,7 @@ void realizar_operacao(int tipo, atributos_compilador &esquerda, atributos_compi
 	default :
 	    yyerror("Operador invalido : " + int_to_str(tipo));	    
     }
-    //esquerda.valor = ?????
+    esquerda.valor = cria_temp_var(esquerda.tipo.base);
     esquerda.codigo = primeiro.codigo + segundo.codigo + esquerda.valor + " = " + primeiro.valor + operador + segundo.valor + ";\n";
 }
 
@@ -172,33 +172,8 @@ void tipo_resultado(int tipo, string &primeiro, string &segundo)
     return tabela_operacoes[tipo][i][j];
 
 }
-<<<<<<< .mine
-$$.codigo += " " + adiciona_func_global($1.valor, $$.tipo) + "(" + $3.codigo + ")\n{\n";
-		if($$.tipo.ndim == 0)
-			$$.codigo += $$.tipo.base + " _ret = " + valor_padrao($$.tipo.base) + ";\n";
-		else
-		{
-			bool aster = $$.tipo.ndim == 1;
-			$$.codigo += $$.tipo.base + "*";
-			int temp = $$.tipo.dim1;
-			if($$.tipo.dim1 > 1)
-				temp *= $$.tipo.dim2;
-			$$.codigo += " _ret;\n_ret = new " + $$.tipo.base + "[" +	int_to_str(temp) + "];\n";
-		}
-=======
->>>>>>> .r32
 
-<<<<<<< .mine
-		adiciona_var("_ret",$$.tipo);
-		for(atributo *temp = &$3; temp != NULL; temp = temp->prox){
-			(func_global[$$.valor]->param).push_back(temp->tipo);
-			adiciona_var(temp->valor, temp->tipo);
-		}
-	}
-void gera_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo, atributos_compilador &quarto)
-=======
 void gera_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo, atributos_compilador &quarto,map<string, funcao*> &func_global,deque<map <string, variavel*> > &var)
->>>>>>> .r32
 {
     esquerda.valor = segundo.valor;
     esquerda.codigo = primeiro.codigo;
@@ -226,17 +201,11 @@ void gera_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro,
 	esquerda.codigo += " _ret;\n_ret = new " + esquerda.tipo.base + "[" +	int_to_str(temp) + "];\n";
    
     }
-<<<<<<< .mine
     adiciona_var("_ret",esquerda.tipo);
-  /*  for(atributos_compiladores *temp = &quarto; temp != NULL; temp = temp->prox){
+    for(atributos_compilador *temp = &quarto; temp != NULL; temp = temp->prox)
+    {
 	(func_global[esquerda.valor]->param).push_back(temp->tipo);
 	adiciona_var(temp->valor, temp->tipo);
-=======
-    adiciona_var("_ret",esquerda.tipo);
-    for(atributos_compilador *temp = &quarto; temp != NULL; temp = temp->prox){
-	(func_global[esquerda.valor]->param).push_back(temp->tipo);
-	adiciona_var(temp->valor, temp->tipo);
->>>>>>> .r32
     }
 }
 
@@ -323,7 +292,6 @@ string adiciona_func_global(const string &nome, const string &base, int ndim, in
 	yyerror("Ja existe uma funcao com o nome " + nome);
 	return "";
 }
-<<<<<<< .mine
 
 string transforma_variavel(const string &n)
 {
@@ -367,7 +335,7 @@ void gera_test(string n, atributos_compilador &n2, atributos_compilador  n3, atr
 	n2.valor = transforma_variavel("bool");
 	n2.codigo = n3.codigo + n4.codigo + n2.valor + " = " + n3.valor + ' ' + n + ' ' + n4.valor + ";\n";
 }
-=======
+
 
 void adiciona_var(const string &nome, const string &base, int ndim, int dim1, int dim2, deque<map <string, variavel*> > &var)
 {
@@ -469,4 +437,3 @@ void cria_id(atributos_compilador &esquerda,atributos_compilador &primeiro)
 	esquerda.valor =  "_" + primeiro.valor; 
 	esquerda.codigo = "";
 }
->>>>>>> .r32
