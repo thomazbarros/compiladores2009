@@ -437,8 +437,23 @@ void cria_id(atributos_compilador &esquerda,atributos_compilador &primeiro)
 	esquerda.valor =  "_" + primeiro.valor; 
 	esquerda.codigo = "";
 }
+void negacao(string logica,atributos_compilador &esquerda, atributos_compilador &segundo)
+{
+	if(logica != "!")	
+	{	
+		yyerror("Simbolo desconhecido :"+logica);		
+	}
 
-void comparacao(string simbolo)
+	if(segundo.tipo.base != "bool" && segundo.tipo.n_dim < 1)
+	{
+		yyerror("Comparacao invalida.");
+	}
+
+	esquerda.valor = cria_temp_var("bool");
+	esquerda.codigo = esquerda.valor + " = " + logica + segundo.codigo + ";\n";
+}
+
+/*void comparacao(string simbolo)
 {
 	if(simbolo == ">") 
 	{
@@ -498,5 +513,5 @@ void expressoes_logicas(string logica,atributos_compilador &esquerda, atributos_
 	}	
 	
 	yyerror("Simbolo desconhecido :"+logica);
-}
+}*/
 
