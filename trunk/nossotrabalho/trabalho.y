@@ -59,6 +59,7 @@ int yylex();
 %token TK_LOG_NOT TK_LOG_E TK_LOG_OU
 %token TK_FUNC_PRINC TK_FUNC_IF TK_FUNC_ELSE TK_FUNC_FOR TK_FUNC_WHILE TK_FUNC_START TK_FUNC_END TK_FUNC_FUNC TK_FUNC_PROT TK_FUNC_RETURN TK_FUNC_ENT TK_FUNC_SAIDA
 %token TK_BOOL TK_ID TK_NUM TK_REAL TK_CHAR TK_STRING   
+%token TK_N TK_TEST
 
 %% 
 S : VG S 
@@ -126,6 +127,53 @@ VL : tipo LID ';' VL
   |
   ;
 
+N: TK_CMP_IGUAL
+   |TK_CMP_DIF
+   |TK_CMP_MAIOR
+   |TK_CMP_MAIORIG
+   |TK_CMP_MENOR
+   |TK_CMP_MENORIG
+   ;
+
+TK_CMP_IGUAL : E "==" E{
+			gera_n("==", $$, $1, $3);
+		 }
+               ;
+
+TK_CMP_DIF : E "!=" E{
+			gera_n("!=", $$, $1, $3);
+             }
+             ;
+
+TK_CMP_MAIOR : E ">" E{
+			gera_n(">", $$, $1, $3);
+               }
+               ;
+
+TK_CMP_MAIORIG : E ">=" E{
+			gera_n(">=", $$, $1, $3);
+                 }
+                 ;
+
+TK_CMP_MENOR : E "<" E{
+			gera_n("<", $$, $1, $3);
+               }
+               ;
+
+TK_CMP_MENORIG : E "<=" E{
+			gera_n("<=", $$, $1, $3);
+                 }
+                 ;
+
+TEST : N "&&" N{
+		gera_test("&&", $$, $1, $3);
+	}
+	| N "||" N{
+		gera_test("||", $$, $1, $3);
+         }
+       | N
+       ;
+
 CMD : CMD_ATRIB
   | CMD_IF
   | CMD_FOR
@@ -165,7 +213,7 @@ CMD_IF : TK_FUNC_IF '(' TEST ')' CMD{
   ;
 
 CMD_FOR : TK_FUNC_FOR '(' TEST ';' TEST ';' TEST ')' CMD{
-			gera-for($$, $3, $5, $7, $9);
+			gera_for($$, $3, $5, $7, $9);
 	   }
   ;
 
