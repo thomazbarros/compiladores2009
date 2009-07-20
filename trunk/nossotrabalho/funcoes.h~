@@ -54,6 +54,7 @@ deque<map <string, variavel*> > var;
 map<string, funcao*> func_global;
 int nlinha = 1;
 int nivel = 1;
+int total_niveis = 0;
 int numLinha = 1;
 map<string, unsigned int> contador;
 
@@ -555,12 +556,13 @@ void expressoes_logicas(string logica,atributos_compilador &esquerda, atributos_
 
 void sobe_nivel()
 {
-	nivel++;
+	total_niveis++;
+	nivel_atual++;
 	var.push_back(*(new map<string, variavel*>));
 	
 }
 void desce_nivel()
 {
-	nivel--;
+	nivel_atual--;
 	var.pop_back();
 }
