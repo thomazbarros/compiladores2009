@@ -44,9 +44,9 @@ LID : V ',' LID
   | V
   ; 
 
-V : TK_ID
-  | TK_ID '[' TK_NUM ']'
-  | TK_ID '[' TK_NUM ']' '[' TK_NUM ']'
+V : TK_ID {gera_variavel($$, $1);}
+  | TK_ID '[' TK_NUM ']' {gera_vetor($$, $1, $3);}
+  | TK_ID '[' TK_NUM ']' '[' TK_NUM ']' {gera_matriz($$, $1, $3, $5);}
   ;
 
 funcao : nome_funcao corpo { gera_codigo_funcao($$,$1,$2); }
@@ -99,42 +99,26 @@ N: TK_CMP_IGUAL
    |TK_CMP_MENORIG
    ;
 
-TK_CMP_IGUAL : E "==" E{
-			gera_n("==", $$, $1, $3);
-		 }
-               ;
+TK_CMP_IGUAL : E "==" E {gera_n("==", $$, $1, $3);}
+  ;
 
-TK_CMP_DIF : E "!=" E{
-			gera_n("!=", $$, $1, $3);
-             }
-             ;
+TK_CMP_DIF : E "!=" E {gera_n("!=", $$, $1, $3);}
+  ;
 
-TK_CMP_MAIOR : E ">" E{
-			gera_n(">", $$, $1, $3);
-               }
-               ;
+TK_CMP_MAIOR : E ">" E {gera_n(">", $$, $1, $3);}
+  ;
 
-TK_CMP_MAIORIG : E ">=" E{
-			gera_n(">=", $$, $1, $3);
-                 }
-                 ;
+TK_CMP_MAIORIG : E ">=" E {gera_n(">=", $$, $1, $3);}
+  ;
 
-TK_CMP_MENOR : E "<" E{
-			gera_n("<", $$, $1, $3);
-               }
-               ;
+TK_CMP_MENOR : E "<" E {gera_n("<", $$, $1, $3);}
+  ;
 
-TK_CMP_MENORIG : E "<=" E{
-			gera_n("<=", $$, $1, $3);
-                 }
-                 ;
+TK_CMP_MENORIG : E "<=" E {gera_n("<=", $$, $1, $3);}
+  ;
 
-TEST : N "&&" N{
-		gera_test("&&", $$, $1, $3);
-	}
-	| N "||" N{
-		gera_test("||", $$, $1, $3);
-         }
+TEST : N "&&" N {gera_test("&&", $$, $1, $3);}
+	| N "||" N {gera_test("||", $$, $1, $3);}
        | N
        ;
 
@@ -168,36 +152,20 @@ VA : TK_ID
   | TK_ID '[' E ']' '[' E ']'
   ;
  
-CMD_IF : TK_FUNC_IF '(' TEST ')' CMD{
-		gera_if($$, $3, $5);
-	  }
-  | TK_FUNC_IF '(' TEST ')' CMD TK_FUNC_ELSE CMD{
-		gera_if_else($$, $3, $5, $7);
-    }
+CMD_IF : TK_FUNC_IF '(' TEST ')' CMD {gera_if($$, $3, $5);}
+  | TK_FUNC_IF '(' TEST ')' CMD TK_FUNC_ELSE CMD {gera_if_else($$, $3, $5, $7);}
   ;
 
-CMD_FOR : TK_FUNC_FOR '(' CMD_ATRIB ';' TK_CMP_MAIOR ';' CMD_ATRIB ')' CMD{
-			gera_for($$, $3, $5, $7, $9);
-	   }
-	   | TK_FUNC_FOR '(' CMD_ATRIB ';' TK_CMP_MAIORIG ';' CMD_ATRIB ')' CMD{
-			gera_for($$, $3, $5, $7, $9);
-	   }
-          |TK_FUNC_FOR '(' CMD_ATRIB ';' TK_CMP_MENOR ';' CMD_ATRIB ')' CMD{
-			gera_for($$, $3, $5, $7, $9);
-	   }
-          |TK_FUNC_FOR '(' CMD_ATRIB ';' TK_COMP_MENORIG ';' CMD_ATRIB ')' CMD{
-			gera_for($$, $3, $5, $7, $9);
-	   }
+CMD_FOR : TK_FUNC_FOR '(' CMD_ATRIB ';' TK_CMP_MAIOR ';' CMD_ATRIB ')' CMD {gera_for($$, $3, $5, $7, $9);}
+	   |TK_FUNC_FOR '(' CMD_ATRIB ';' TK_CMP_MAIORIG ';' CMD_ATRIB ')' CMD {gera_for($$, $3, $5, $7, $9);}
+          |TK_FUNC_FOR '(' CMD_ATRIB ';' TK_CMP_MENOR ';' CMD_ATRIB ')' CMD {gera_for($$, $3, $5, $7, $9);}
+          |TK_FUNC_FOR '(' CMD_ATRIB ';' TK_COMP_MENORIG ';' CMD_ATRIB ')' CMD {gera_for($$, $3, $5, $7, $9);}
           ;
 
-CMD_WHILE : TK_FUNC_WHILE '(' TEST ')' CMD{
-			gera_while($$, $3, $5);
-	     }
+CMD_WHILE : TK_FUNC_WHILE '(' TEST ')' CMD {gera_while($$, $3, $5);}
   ;
 
-CMD_DO_WHILE : "do" CMD "while" '(' TEST ')' ';'{
-			gera_do_while($$, $2, $5);
-		 }
+CMD_DO_WHILE : "do" CMD "while" '(' TEST ')' ';' {gera_do_while($$, $2, $5);}
   ;
 
 CMD_SWITCH : "switch" '(' E ')' '{' LABELS DEFAULT '}'
