@@ -212,7 +212,7 @@ void tipo_resultado(int tipo, string &primeiro, string &segundo)
 
 }
 
-void gera_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo, atributos_compilador &quarto,map<string, funcao*> &func_global,deque<map <string, variavel*> > &var)
+void gera_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo, atributos_compilador &quarto)
 {
     esquerda.valor = segundo.valor;
     esquerda.codigo = primeiro.codigo;
@@ -320,7 +320,7 @@ string label(const char *n)
 	return string("P_") + n + int_to_src(num++);
 }
 
-string adiciona_func_global(const string &nome, const string &base, int ndim, int dim1, int dim2,map<string, funcao*> &func_global)
+string adiciona_func_global(const string &nome, const string &base, int ndim, int dim1, int dim2)
 {
 	if(func_global.find(nome) == func_global.end())
 	{
@@ -376,7 +376,7 @@ void gera_test(string n, atributos_compilador &n2, atributos_compilador  n3, atr
 }
 
 
-void adiciona_var(const string &nome, const string &base, int ndim, int dim1, int dim2, deque<map <string, variavel*> > &var)
+void adiciona_var(const string &nome, const string &base, int ndim, int dim1, int dim2)
 {
 	string str;
 
@@ -408,7 +408,7 @@ string valor_inicial_padrao(atributos_compilador atr)
 	{
 		return "0";
 	}
-	if(atr.tipo.base == "real")
+	if(atr.tipo.base == "double")
 	{
 		return "0.0";
 	}
@@ -427,7 +427,7 @@ string valor_inicial_padrao(atributos_compilador atr)
 	yyerror("Tipo desconhecido : "+  atr.tipo.base);
 }
 
-void chama_funcao(atributos_compilador &esquerda,atributos_compilador &primeiro, atributos_compilador &terceiro, map<string, funcao*> &func_global)
+void chama_funcao(atributos_compilador &esquerda,atributos_compilador &primeiro, atributos_compilador &terceiro)
 {
 	bool existe = verifica_existencia_funcao(primeiro);
 	if(existe)
@@ -456,7 +456,7 @@ void chama_funcao(atributos_compilador &esquerda,atributos_compilador &primeiro,
 	yyerror("A funcao com nome "+ +" nao existe");
 }
 
-bool verifica_existencia_funcao(atributos_compilador &atr, map<string, funcao*> &func_global)
+bool verifica_existencia_funcao(atributos_compilador &atr)
 {
 	string str;
 
@@ -564,5 +564,81 @@ void sobe_nivel()
 void desce_nivel()
 {
 	nivel_atual--;
+	var.pop_back();
+}
+
+string declarar_variaveis_temporarias()
+{
+	string resultado = "";
+
+	if(conta_temp_var.find("int") != conta_temp_var.end())
+	{
+		resultado += "int ";
+		for(int i = 0; i < conta_temp_var["int"].size(); i++)
+		{
+			resultado += "_int"+inttostr(i)+"=0"
+			if(i+1 != conta_temp_var["int"].size())
+			{
+				resultado += ","
+			}
+		}
+		resultado += ";\n";
+	}
+	if(conta_temp_var.find("bool") != conta_temp_var.end())
+	{
+		resultado += "int ";
+		for(int i = 0; i < conta_temp_var["bool"].size(); i++)
+		{
+			resultado += "_bool"+inttostr(i)
+			if(i+1 != conta_temp_var["bool"].size())
+			{
+				resultado += ","
+			}
+		}
+		resultado += ";\n";
+	}
+	if(conta_temp_var.find("char") != conta_temp_var.end())
+	{
+		for(int i = 0; i < conta_temp_var["char"].size(); i++)
+		{
+			resultado += "_char"+inttostr(i)
+			if(i+1 != conta_temp_var["char"].size())
+			{
+				resultado += ","
+			}
+		}
+		resultado += ";\n";	
+	}
+	if(conta_temp_var.find("string") != conta_temp_var.end())
+	{
+		for(int i = 0; i < conta_temp_var["string"].size(); i++)
+		{
+			resultado += "_string"+inttostr(i)
+			if(i+1 != conta_temp_var["string"].size())
+			{
+				resultado += ","
+			}		
+		}
+		resultado += ";\n";		
+	}
+	if(conta_temp_var.find("double") != conta_temp_var.end())
+	{
+		for(int i = 0; i < conta_temp_var["double"].size(); i++)
+		{
+			resultado += "_double"+inttostr(i)
+			if(i+1 != conta_temp_var["double"].size())
+			{
+				resultado += ","
+			}		
+		}
+		resultado += ";\n";		
+	}
+
+	return resultado;
+}
+
+void declara_main(esquerda,segundo){
+	
+	esquerda.codigo = "int main(void)\n{\nint _ret = 0;\n" + segundo.codigo + "return _ret;\n}\n";
 	var.pop_back();
 }

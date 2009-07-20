@@ -50,7 +50,7 @@ V : TK_ID
   ;
 
 funcao : TF FUN_ID '(' LParam ')' corpo {gera_funcao($$,$1,$2,$4); }
-  | TF FUN_ID '(' LParam ')' ';'
+  | TF FUN_ID '(' LParam ')' ';' {gera_funcao($$,$1,$2,$4); }
   ;
 
 FUN_ID : ID

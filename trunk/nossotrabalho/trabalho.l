@@ -63,7 +63,7 @@ SENTENCA		\"([^\"\n]|(\\\"))*\"
 
 {IDENTIFICADOR}		{ yylval.valor = yytext; return TK_ID; }
 {NATURAL}		{ yylval.valor = yytext; yylval.tipo.base = "int"; return TK_NUM; }
-{REAL}		{ yylval.valor = yytext; yylval.tipo.base = "real"; return TK_REAL; }
+{REAL}		{ yylval.valor = yytext; yylval.tipo.base = "double"; return TK_REAL; }
 {CARACTER}		{ yylval.valor = yytext; yylval.tipo.base = "char"; return TK_CHAR; }
 {SENTENCA}	{ yylval.valor = yytext; yylval.tipo.base = "string"; return TK_STRING; }
 .		{ return *yytext; }
