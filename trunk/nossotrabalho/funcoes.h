@@ -499,6 +499,7 @@ void cria_id(atributos_compilador &esquerda,atributos_compilador &primeiro)
 	esquerda.valor =  "_" + primeiro.valor; 
 	esquerda.codigo = "";
 }
+
 void negacao(string logica,atributos_compilador &esquerda, atributos_compilador &segundo)
 {
 	if(logica != "!")	
@@ -672,4 +673,28 @@ void gera_codigo_funcao(atributos_compilador &esquerda, atributos_compilador &se
 	esquerda.valor = primeiro.valor;
 	esquerda.tipo = primeiro.tipo;
 	desce_nivel();
+}
+
+void gera_variavel(variavel &n, variavel n2)
+{
+	n = n2;
+	n.codigo = n2.valor + "_"  + int_to_src(nivel--) + ";\n";
+}
+
+void gera_vetor(variavel &n, variavel n2, atributos_compilador n3)
+{
+	n.tipo = n2.tipo;
+	n.ndim = 1;
+	n.dim1 = n3.valor;
+	n.codigo = n2.valor + "_" + int_to_src(nivel--) + "[" + n3.valor + "] \n;";
+}
+
+void gera_matriz(variavel &n, variavel n2, atributos_compilador n3, atributos_compilador n4)
+{
+	n.tipo = n2.tipo;
+	n.ndim = 2;
+	int n5 = n3.valor * n4.valor;
+	n.dim1 = n3.valor;
+	n.dim2 = n4.valor;
+	n.codigo = n2.valor + "_" + int_to_src(nivel--) + "[" + n5 + "] \n;";
 }
