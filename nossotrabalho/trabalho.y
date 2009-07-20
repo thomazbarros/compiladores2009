@@ -79,7 +79,7 @@ Param : tipo TK_ID
   | tipo '*' TK_ID
   ;
 
-main : TK_VAR_INT TK_FUNC_PRINC corpo
+main : TK_FUNC_PRINC corpo {declara_main($$,$2);}
   ;
 
 corpo : TK_FUNC_START VL CMDS TK_FUNC_END

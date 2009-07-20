@@ -408,7 +408,7 @@ string valor_inicial_padrao(atributos_compilador atr)
 	{
 		return "0";
 	}
-	if(atr.tipo.base == "real")
+	if(atr.tipo.base == "double")
 	{
 		return "0.0";
 	}
@@ -564,5 +564,81 @@ void sobe_nivel()
 void desce_nivel()
 {
 	nivel_atual--;
+	var.pop_back();
+}
+
+string declarar_variaveis_temporarias()
+{
+	string resultado = "";
+
+	if(conta_temp_var.find("int") != conta_temp_var.end())
+	{
+		resultado += "int ";
+		for(int i = 0; i < conta_temp_var["int"].size(); i++)
+		{
+			resultado += "_int"+inttostr(i)+"=0"
+			if(i+1 != conta_temp_var["int"].size())
+			{
+				resultado += ","
+			}
+		}
+		resultado += ";\n";
+	}
+	if(conta_temp_var.find("bool") != conta_temp_var.end())
+	{
+		resultado += "int ";
+		for(int i = 0; i < conta_temp_var["bool"].size(); i++)
+		{
+			resultado += "_bool"+inttostr(i)
+			if(i+1 != conta_temp_var["bool"].size())
+			{
+				resultado += ","
+			}
+		}
+		resultado += ";\n";
+	}
+	if(conta_temp_var.find("char") != conta_temp_var.end())
+	{
+		for(int i = 0; i < conta_temp_var["char"].size(); i++)
+		{
+			resultado += "_char"+inttostr(i)
+			if(i+1 != conta_temp_var["char"].size())
+			{
+				resultado += ","
+			}
+		}
+		resultado += ";\n";	
+	}
+	if(conta_temp_var.find("string") != conta_temp_var.end())
+	{
+		for(int i = 0; i < conta_temp_var["string"].size(); i++)
+		{
+			resultado += "_string"+inttostr(i)
+			if(i+1 != conta_temp_var["string"].size())
+			{
+				resultado += ","
+			}		
+		}
+		resultado += ";\n";		
+	}
+	if(conta_temp_var.find("double") != conta_temp_var.end())
+	{
+		for(int i = 0; i < conta_temp_var["double"].size(); i++)
+		{
+			resultado += "_double"+inttostr(i)
+			if(i+1 != conta_temp_var["double"].size())
+			{
+				resultado += ","
+			}		
+		}
+		resultado += ";\n";		
+	}
+
+	return resultado;
+}
+
+void declara_main(atributos_compilador &esquerda, atributos_compilador &segundo){
+	
+	esquerda.codigo = "int main(void)\n{\nint _ret = 0;\n" + segundo.codigo + "return _ret;\n}\n";
 	var.pop_back();
 }
