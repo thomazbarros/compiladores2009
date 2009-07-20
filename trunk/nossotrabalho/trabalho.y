@@ -195,8 +195,8 @@ CMDS : CMD CMDS
 BLOCO : TK_FUNC_START CMDS TK_FUNC_END
 
 CMD_ATRIB : VA TK_AT_IGUAL E;
-  | VA "+=" E;
-  | VA "=-" E
+  | VA "+=" E
+  | VA "-=" E
   ;
 
 VA : TK_ID
@@ -212,10 +212,19 @@ CMD_IF : TK_FUNC_IF '(' TEST ')' CMD{
     }
   ;
 
-CMD_FOR : TK_FUNC_FOR '(' TEST ';' TEST ';' TEST ')' CMD{
+CMD_FOR : TK_FUNC_FOR '(' CMD_ATRIB ';' TK_CMP_MAIOR ';' CMD_ATRIB ')' CMD{
 			gera_for($$, $3, $5, $7, $9);
 	   }
-  ;
+	   | TK_FUNC_FOR '(' CMD_ATRIB ';' TK_CMP_MAIORIG ';' CMD_ATRIB ')' CMD{
+			gera_for($$, $3, $5, $7, $9);
+	   }
+          |TK_FUNC_FOR '(' CMD_ATRIB ';' TK_CMP_MENOR ';' CMD_ATRIB ')' CMD{
+			gera_for($$, $3, $5, $7, $9);
+	   }
+          |TK_FUNC_FOR '(' CMD_ATRIB ';' TK_COMP_MENORIG ';' CMD_ATRIB ')' CMD{
+			gera_for($$, $3, $5, $7, $9);
+	   }
+          ;
 
 CMD_WHILE : TK_FUNC_WHILE '(' TEST ')' CMD{
 			gera_while($$, $3, $5);
