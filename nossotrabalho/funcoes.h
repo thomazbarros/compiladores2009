@@ -438,4 +438,65 @@ void cria_id(atributos_compilador &esquerda,atributos_compilador &primeiro)
 	esquerda.codigo = "";
 }
 
+void comparacao(string simbolo)
+{
+	if(simbolo == ">") 
+	{
+	
+	}
+	if(simbolo == "<")	
+	{
+
+	}	
+	if(simbolo == ">=")
+	{
+	
+	}	
+	if(simbolo == "<=")	
+	{
+	
+	}	
+	if(simbolo == "==")
+	{
+	
+	}
+	
+	yyerror("Simbolo desconhecido :"+simbolo);		
+}
+
+void expressoes_logicas(string logica,atributos_compilador &esquerda, atributos_compilador &primeiro = NULL, atributos_compilador &segundo = NULL, atributos_compilador &terceiro = NULL)
+{
+	esquerda.valor = cria_temp_var("bool");
+	if(logica == "!")	
+	{	
+		if(segundo.tipo.base != "bool" && segundo.tipo.n_dim < 1)
+		{
+			yyerror("Comparacao invalida.");
+		}
+		esquerda.codigo = esquerda.valor + " = !" + segundo.codigo + ";\n";
+		return; 		
+	}
+	
+	if(primeiro == NULL || terceiro == NULL)
+	{
+		yyerror("Argumentos invalidos para uma expressao regular");
+	}
+
+	if(primeiro.tipo.base != "bool" || terceiro.tipo.base != "bool" || primeiro.tipo.ndim > 0 || seguinte.tipo.ndim > 0)
+		yyerror("Tipos invalidos para operacoes logicas.");
+
+	if(logica == "&&")
+	{
+		
+		esquerda.codigo = primeiro.codigo + terceiro.codigo + esquerda.valor + " =" + primeiro.valor + "&&" + seguinte.valor + ";\n";
+		return;
+	}	
+	if(logica == "||")
+	{
+		esquerda.codigo = primeiro.codigo + terceiro.codigo + esquerda.valor + " =" + primeiro.valor + "||" + seguinte.valor + ";\n";
+		return;
+	}	
+	
+	yyerror("Simbolo desconhecido :"+logica);
+}
 
