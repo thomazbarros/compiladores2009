@@ -26,6 +26,7 @@ int yylex();
 %left '*' '/'
 %left '%'
 %right '+='
+%nonassoc '<' '>'
 %
 
 %% 
