@@ -372,9 +372,18 @@ void chama_funcao(atributos_compilador &esquerda,atributos_compilador &primeiro,
 
 bool verifica_existencia_funcao(atributos_compilador &atr, map<string, funcao*> &func_global)
 {
-	if(func_global.find(atr.nome) == func_global.end())
-	{
-		return false;
-	}
-	return true;
+	string str;
+
+	str = atr.valor.substr(0, atr.valor.find_first_of('['));
+
+	if(func_global.find(str) == func_global.end())
+		yyerror("A funcao " + str + " nao existe.");
+
+	atr.tipo = func_global[str]->tipo;
+}
+
+void cria_id(atributos_compilador &esquerda,atributos_compilador &primeiro)
+{
+	esquerda.valor =  "_" + primeiro.valor; 
+	esquerda.codigo = "";
 }
