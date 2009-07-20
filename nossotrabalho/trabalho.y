@@ -49,8 +49,8 @@ V : TK_ID
   | TK_ID '[' TK_NUM ']' '[' TK_NUM ']'
   ;
 
-funcao : TF FUN_ID '(' LParam ')' corpo {}
-  | TF FUN_ID '(' LParam ')' ';'
+funcao : TF FUN_ID '(' LParam ')' corpo {gera_funcao($$,$1,$2,$4); }
+  | TF FUN_ID '(' LParam ')' ';' {gera_funcao($$,$1,$2,$4); }
   ;
 
 FUN_ID : ID
@@ -233,15 +233,15 @@ CMD_SAIDA : TK_FUNC_SAIDA "<<" E
   | TK_FUNC_SAIDA "<<" E "<<" "endl"
   ;
 
-E : E TK_OP_SOMA T
-  | E TK_OP_SUB T
+E : E TK_OP_SOMA T {realizar_operacao(SOMA,$$,$1,$3);}
+  | E TK_OP_SUB T {realizar_operacao(SUBTR,$$,$1,$3);}
   | T
   ;
 
-T : T TK_OP_MULT F
-  | T TK_OP_DIV F
-  | T TK_OP_REST F
-  | T TK_OP_DIVINT F
+T : T TK_OP_MULT F {realizar_operacao(MULT,$$,$1,$3);}
+  | T TK_OP_DIV F {realizar_operacao(DIV,$$,$1,$3);}
+  | T TK_OP_REST F {realizar_operacao(MOD,$$,$1,$3);}
+  | T TK_OP_DIVINT F {realizar_operacao(DIV,$$,$1,$3);}
   | F
   ;
 
