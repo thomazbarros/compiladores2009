@@ -1,7 +1,8 @@
 %{
 #include <string>
 #include <iostream>
-
+#include <vector>
+#include <stack>
 using namespace std;
 
 typedef struct {
@@ -22,6 +23,26 @@ typedef struct {
     estrutura_tipos tipo;
     string valor,codigo;
 }atributos_compilador; 
+
+typedef struct 
+{
+	string nome;
+	Tipo tipo;
+	Variavel(string nome, string base, int ndim=0, int dim1=1, int dim2=1) : nome(nome), tipo(base, ndim, dim1, dim2) {}
+}variavel;
+
+typedef struct
+{
+	string nome;
+	Tipo tipo;
+	vector<Tipo> param;
+	Funcao(string nome, string base, int ndim=0, int dim1=1, int dim2=1) : nome(nome), tipo(base, ndim, dim1, dim2) {}
+}funcao;
+
+deque<map <string, variavel*> > var;
+map<string, funcao*> func_global;
+//map<string, unsigned int> conta_temp_var;
+int nlinha = 1;
 
 #define YYSTYPE atributos_compilador
 
@@ -65,13 +86,19 @@ V : TK_ID
   | TK_ID '[' TK_NUM ']' '[' TK_NUM ']'
   ;
 
-funcao : TF FUN_ID '(' LParam ')' corpo
+funcao : TF FUN_ID '(' LParam ')' corpo {}
   | TF FUN_ID '(' LParam ')' ';'
   ;
 
-FUN_ID : TK_ID
-  | TK_ID '[' TK_NUM ']'
-  | TK_ID '[' TK_NUM ']' '[' TK_NUM ']'
+FUN_ID : ID
+  | ID '[' TK_NUM ']'
+  | ID '[' TK_NUM ']' '[' TK_NUM ']'
+  ;
+
+ID : TK_ID { $$.valor =  "_" + $1.valor; $$.codigo = "";}
+  ;
+
+USA_FUNC : ID '(' L_PARAM4 ')' { chama_funcao($$,$1,$3); }
   ;
 
 TF : TK_VAR_VOID
@@ -207,6 +234,7 @@ F : TK_LOG_NOT F
   | TK_ID '[' E ']'
   | TK_ID '[' E ']' '[' E ']'
   | TK_FUNC_FUNC
+  | USA_FUNC
   ;
 
 %%

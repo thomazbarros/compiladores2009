@@ -170,26 +170,8 @@ void tipo_resultado(int tipo, string &primeiro, string &segundo)
     return tabela_operacoes[tipo][i][j];
 
 }
-$$.codigo += " " + adiciona_func_global($1.valor, $$.tipo) + "(" + $3.codigo + ")\n{\n";
-		if($$.tipo.ndim == 0)
-			$$.codigo += $$.tipo.base + " _ret = " + valor_padrao($$.tipo.base) + ";\n";
-		else
-		{
-			bool aster = $$.tipo.ndim == 1;
-			$$.codigo += $$.tipo.base + "*";
-			int temp = $$.tipo.dim1;
-			if($$.tipo.dim1 > 1)
-				temp *= $$.tipo.dim2;
-			$$.codigo += " _ret;\n_ret = new " + $$.tipo.base + "[" +	int_to_str(temp) + "];\n";
-		}
 
-		adiciona_var("_ret",$$.tipo);
-		for(atributo *temp = &$3; temp != NULL; temp = temp->prox){
-			(func_global[$$.valor]->param).push_back(temp->tipo);
-			adiciona_var(temp->valor, temp->tipo);
-		}
-	}
-void gera_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo, atributos_compilador &quarto)
+void gera_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo, atributos_compilador &quarto,map<string, funcao*> &func_global,deque<map <string, variavel*> > &var)
 {
     esquerda.valor = segundo.valor;
     esquerda.codigo = primeiro.codigo;
@@ -200,10 +182,10 @@ void gera_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro,
     {
     	esquerda.codigo += "*";
     }
-    //esquerda.codigo += " " + adiciona_func_global(segundo.valor, esquerda.tipo) + "(" + quarto.codigo + ")\n{\n";
+    esquerda.codigo += " " + adiciona_func_global(segundo.valor, esquerda.tipo) + "(" + quarto.codigo + ")\n{\n";
     if(esquerda.tipo.n_dim == 0)
     {
-//        esquerda.codigo += esquerda.tipo.base + " _ret = " + valor_padrao(esquerda.tipo.base + ";\n";
+        esquerda.codigo += esquerda.tipo.base + " _ret = " + valor_inicial_padrao(esquerda) + ";\n";
     }
     else
     {
@@ -218,14 +200,14 @@ void gera_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro,
    
     }
     adiciona_var("_ret",esquerda.tipo);
-  /*  for(atributos_compiladores *temp = &quarto; temp != NULL; temp = temp->prox){
+    for(atributos_compilador *temp = &quarto; temp != NULL; temp = temp->prox){
 	(func_global[esquerda.valor]->param).push_back(temp->tipo);
 	adiciona_var(temp->valor, temp->tipo);
-    }*/
+    }
 }
 
 
-inttostr(int n)
+string inttostr(int n)
 {
 	char buf[20];
 	sprintf(buf,"%d",n);
@@ -239,29 +221,29 @@ int strtoint(String st)
 	return n;
 }
 
-void gera_if(atribuos_compilador n, atributos_compilador n2, atributos_compilador n3)
+void gera_if(atributos_compilador n, atributos_compilador n2, atributos_compilador n3)
 {
 	n.valor = "";
-	n.tipo.ajuste("");
+	n.tipo.modifica_valores("");
 	string inicio;
 	inicio = label("INICIO"); 
 	n.codigo = inicio + ":;\n" + "if( " + n2.valor + " ) goto " + n3.valor + ";\n";
 }
 
-void gera_if_else(atribuos_compilador n, atributos_compilador n2, atributos_compilador n3, atributos_compilador n4)
+void gera_if_else(atributos_compilador n, atributos_compilador n2, atributos_compilador n3, atributos_compilador n4)
 {
 	n.valor = "";
-	n.tipo.ajuste("");
+	n.tipo.modifica_valores("");
 	string inicio;
 	inicio = label("INICIO"); 
 	n.codigo = inicio + ":;\n" + "if( " + n2.valor + " ) goto " + n3.valor + ";\n";
 	n.codigo = inicio + ":;\n" + "if( " + n2.valor + " ) goto " + n4.valor + ";\n";
 }
 
-void gera_while(atribuos_compilador n, atributos_compilador n2, atributos_compilador n3)
+void gera_while(atributos_compilador n, atributos_compilador n2, atributos_compilador n3)
 {
 	n.valor = "";
-	n.tipo.ajuste("");
+	n.tipo.modifica_valores("");
 	string inicio, fim;
 	inicio = label("INICIO");
 	fim = label("FIM");
@@ -269,20 +251,20 @@ void gera_while(atribuos_compilador n, atributos_compilador n2, atributos_compil
 	n.codigo += n3.codigo + "goto " + inicio + ";\n" + fim + ":;\n";
 }
 
-void gera_do_while(atribuos_compilador n, atributos_compilador n2, atributos_compilador n3)
+void gera_do_while(atributos_compilador n, atributos_compilador n2, atributos_compilador n3)
 {
 	n.valor = "";
-	n.tipo.ajuste("");
+	n.tipo.modifica_valores("");
 	string inicio;
 	inicio = label("INICIO"); 
 	n.codigo = inicio + ":;\n" + n2.codigo + n3.codigo + "if( " + n3.valor + " ) goto " + inicio + ";\n";
 }
 
-void gera_for(atribuos_compilador n, atributos_compilador n2, atributos_compilador n3, atributos-compilador, n4,
+void gera_for(atributos_compilador n, atributos_compilador n2, atributos_compilador n3, atributos-compilador, n4,
 atributos_compilador n5)
 {
 	n.valor = "";
-	n.tipo.ajuste("");
+	n.tipo.modifica_valores("");
 	string inicio, fim;
 	inicio = label("INICIO");
 	fim = label("FIM");
@@ -294,4 +276,105 @@ string label(const char *n)
 {
 	static int num = 1;
 	return string("P_") + n + int_to_src(num++);
+}
+
+string adiciona_func_global(const string &nome, const string &base, int ndim, int dim1, int dim2,map<string, funcao*> &func_global)
+{
+	if(func_global.find(nome) == func_global.end())
+	{
+		func_global[nome] = new Funcao(nome, base, ndim, dim1, dim2);
+		return nome;
+	}
+
+	yyerror("Ja existe uma funcao com o nome " + nome);
+	return "";
+}
+
+void adiciona_var(const string &nome, const string &base, int ndim, int dim1, int dim2, deque<map <string, variavel*> > &var)
+{
+	string str;
+
+	str = nome;
+
+	if(var.back().find(nome) == var.back().end())
+	{
+		var.back().insert( make_pair(nome, new Variavel(nome, base, ndim, dim1, dim2, constante)));
+		return;
+	}
+
+	yyerror("Ja existe uma variavel com o nome " + nome);
+
+}
+
+string adiciona_func_global(const string &nome, const Tipo &tipo)
+{
+	return adiciona_func_global(nome, tipo.base, tipo.ndim, tipo.dim1, tipo.dim2);
+}
+
+void adiciona_var(const string &nome, const Tipo &tipo)
+{
+	adiciona_var(nome, tipo.base, tipo.ndim, tipo.dim1, tipo.dim2);
+}
+
+string valor_inicial_padrao(atributos_compilador atr)
+{
+	if(atr.tipo.base == "int")
+	{
+		return "0";
+	}
+	if(atr.tipo.base == "real")
+	{
+		return "0.0";
+	}
+	if(atr.tipo.base == "char")
+	{
+		return "'\0'";
+	}
+	if(atr.tipo.base == "string")
+	{
+		return "\"\"";
+	}
+	if(atr.tipo.base == "bool")
+	{
+		return "false";
+	}
+	yyerror("Tipo desconhecido : "+  atr.tipo.base);
+}
+
+void chama_funcao(atributos_compilador &esquerda,atributos_compilador &primeiro, atributos_compilador &terceiro, map<string, funcao*> &func_global)
+{
+	bool existe = verifica_existencia_funcao(primeiro);
+	if(existe)
+	{
+		esquerda.tipo = primeiro.tipo;
+		esquerda.codigo = terceiro.codigo;
+		if(esquerda.tipo.n_dim == 0)
+		{
+			esquerda.valor = cria_temp_var(esquerda.tipo.base);
+		}
+		else
+		{
+			esquerda.valor = cria_temp_var("matriz");
+			esquerda.codigo += esquerda.tipo.base + " *";
+		}
+		esquerda.codigo += esquerda.valor;
+		esquerda.codigo += " = " + primeiro.valor + "(" + terceiro.valor + ");\n";
+		
+		int i = 0;
+		for(atributo *temp = &terceiro; temp != NULL ; temp = temp->prox){
+			if(i >= ((func_global[primeiro.valor])->param).size()) yyerror("Numero de parametros incorreto: " + primeiro.valor);
+			if(((func_global[primeiro.valor])->param).at(i).base != temp->tipo.base) yyerror("Tipo de parametro incorreto: " + primeiro.valor + "\n" + temp->tipo.base + " != " + ((func_global[primeiro.valor])->param).at(i).base);
+			i++;
+		}
+	}
+	yyerror("A funcao com nome "+ +" nao existe");
+}
+
+bool verifica_existencia_funcao(atributos_compilador &atr, map<string, funcao*> &func_global)
+{
+	if(func_global.find(atr.nome) == func_global.end())
+	{
+		return false;
+	}
+	return true;
 }
