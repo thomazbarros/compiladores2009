@@ -86,7 +86,7 @@ void realizar_operacao(int tipo, atributos_compilador &esquerda, atributos_compi
 	default :
 	    yyerror("Operador invalido : " + int_to_str(tipo));	    
     }
-    //esquerda.valor = ?????
+    esquerda.valor = cria_temp_var(esquerda.tipo.base);
     esquerda.codigo = primeiro.codigo + segundo.codigo + esquerda.valor + " = " + primeiro.valor + operador + segundo.valor + ";\n";
 }
 

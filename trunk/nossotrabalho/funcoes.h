@@ -437,3 +437,5 @@ void cria_id(atributos_compilador &esquerda,atributos_compilador &primeiro)
 	esquerda.valor =  "_" + primeiro.valor; 
 	esquerda.codigo = "";
 }
+
+
