@@ -676,30 +676,6 @@ void gera_codigo_funcao(atributos_compilador &esquerda, atributos_compilador &se
 	desce_nivel();
 }
 
-void gera_variavel(variavel &n, variavel n2)
-{
-	n = n2;
-	n.codigo = n2.valor + "_"  + int_to_src(nivel--) + ";\n";
-}
-
-void gera_vetor(variavel &n, variavel n2, atributos_compilador n3)
-{
-	n.tipo = n2.tipo;
-	n.ndim = 1;
-	n.dim1 = n3.valor; 
-	n.codigo = n2.valor + "_" + int_to_src(nivel--) + "[" + n3.valor + "]; \n";
-}
-
-void gera_matriz(variavel &n, variavel n2, atributos_compilador n3, atributos_compilador n4)
-{
-	n.tipo = n2.tipo;
-	n.ndim = 2;
-	int n5 = n3.valor * n4.valor;
-	n.dim1 = n3.valor;
-	n.dim2 = n4.valor;
-	n.codigo = n2.valor + "_" + int_to_src(nivel--) + "[" + n5 + "]; \n";
-}
-
 void gera_entrada(atributos_compilador &esquerda, atributos_compilador &terceiro)
 {
 	esquerda.codigo = "cin >> "+ terceiro.valor +";\n"
@@ -764,9 +740,42 @@ void gera_codigo_LID(atributos_compilador &esquerda, atributos_compilador &prime
 	else
 	{
 		primeiro.tipo.base = esquerda.tipo.base;
-		esquerda.codigo = esquerda.tipo + " " +terceiro.codigo;
+		esquerda.codigo = esquerda.tipo.base + " " +terceiro.codigo;
 		adiciona_var(primeiro.valor,primeiro.tipo);
 		var.back()[primeiro.valor]->tipo.constante = primeiro.tipo.constante;
 	}
 
+}
+
+void gera_FUN_ID(atributos_compilador &esquerda,atributos_compilador &primeiro,atributos_compilador &terceiro = NULL,atributos_compilador &quinto = NULL)
+{
+	if(terceiro == NULL && quinto == NULL)
+	{
+		sobe_nivel();
+		esquerda.codigo = primeiro.codigo;
+		return;	
+	}
+	if(terceiro != NULL & quinto == NULL)
+	{
+		sobe_nivel();
+		esquerda.codigo = primeiro.codigo;
+		esquerda.n_dim = 1;
+		esquerda.dim1 = strtoint(terceiro.valor); 
+		return;	
+	}
+	if(terceiro != NULL & quinto != NULL)
+	{
+		sobe_nivel();
+		esquerda.codigo = primeiro.codigo;
+		esquerda.n_dim = 2;
+		esquerda.dim1 = strtoint(terceiro.valor); 
+		esquerda.dim2 = strtoint(quinto.valor); 		
+		return;	
+	}
+	
+	yyerror("Erro no id da funcao");
+}
+
+void gera_bloco(atributos_compilador &esquerda,atributos_compilador &segundo)
+{
 }

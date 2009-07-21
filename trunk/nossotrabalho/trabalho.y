@@ -56,22 +56,19 @@ V : TK_ID {gera_variavel("", $$, $1);}
 funcao : nome_funcao corpo { gera_codigo_funcao($$,$1,$2); }
   ;
 
-nome_funcao : TF FUN_ID '(' LParam ')' { gera_nome_funcao($$,$1,$2,$4); }
+nome_funcao : tipo FUN_ID '(' LParam ')' { gera_nome_funcao($$,$1,$2,$4); }
   ;
 
-FUN_ID : ID
-  | ID '[' TK_NUM ']'
-  | ID '[' TK_NUM ']' '[' TK_NUM ']'
+FUN_ID : ID { gera_FUN_ID($$,$1); }
+  | ID '[' TK_NUM ']' {gera_FUN_ID($$,$1,$3);}
+  | ID '[' TK_NUM ']' '[' TK_NUM ']' {gera_FUN_ID($$,$1,$3,$5);}
   ;
 
-ID : TK_ID { cria_id($$,$1).valor =  "_" + $1.valor; $$.codigo = "";}
+ID : TK_ID { cria_id($$,$1)}
   ;
 
 USA_FUNC : ID '(' L_PARAM4 ')' { chama_funcao($$,$1,$3); }
   ;
-
-TF : TK_VAR_VOID
-   | tipo
 
 LParam :  
   | Params
@@ -131,7 +128,6 @@ CMD : CMD_ATRIB
   | CMD_FOR
   | CMD_WHILE
   | CMD_DO_WHILE
-  | CMD_SWITCH
   | CMD_ENTRADA
   | CMD_SAIDA
   | TK_FUNC_RETURN
@@ -143,7 +139,7 @@ CMDS : CMD CMDS
   |
   ;
 
-BLOCO : TK_FUNC_START CMDS TK_FUNC_END
+BLOCO : TK_FUNC_START CMDS TK_FUNC_END { gera_bloco($$,$2); }
 
 CMD_ATRIB : VA TK_AT_IGUAL E;
   | VA "+=" E
@@ -169,21 +165,6 @@ CMD_WHILE : TK_FUNC_WHILE '(' TEST ')' CMD {gera_while($$, $3, $5);}
   ;
 
 CMD_DO_WHILE : "do" CMD "while" '(' TEST ')' ';' {gera_do_while($$, $2, $5);}
-  ;
-
-CMD_SWITCH : "switch" '(' E ')' '{' LABELS DEFAULT '}'
-  ;
-
-LABELS : LABEL LABELS
-  | CMD LABELS
-  | "break" LABELS
-  | 
-  ;
-
-LABEL : TK_NUM ':'
-  ;
-
-DEFAULT : "default" ':' CMDS
   ;
  
 L_ARGS : 
