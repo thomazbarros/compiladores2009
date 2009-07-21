@@ -21,7 +21,6 @@ int yylex();
 %token TK_LOG_NOT TK_LOG_E TK_LOG_OU
 %token TK_FUNC_PRINC TK_FUNC_IF TK_FUNC_ELSE TK_FUNC_FOR TK_FUNC_WHILE TK_FUNC_START TK_FUNC_END TK_FUNC_FUNC TK_FUNC_PROT TK_FUNC_RETURN TK_FUNC_ENT TK_FUNC_SAIDA TK_FUNC_SAIDA_PL
 %token TK_BOOL TK_ID TK_NUM TK_REAL TK_CHAR TK_STRING   
-%token TK_N TK_TEST
 %left '+' '-'
 %left '*' '/'
 %left '%'
@@ -79,7 +78,8 @@ Params : Param ',' Params
   ;
 
 Param : tipo TK_ID {gera_variavel("", $$, $2);}
-  | tipo '*' TK_ID {gera_variavel("*", $$, $2);} 
+  | tipo '*' TK_ID {gera_variavel("*", $$, $3);} 
+  | tipo '&' TK_ID {gera_variavel("&", $$, $3);}
   ;
 
 main : TK_FUNC_PRINC corpo {declara_main($$,$2);}
@@ -141,14 +141,14 @@ CMDS : CMD CMDS
 
 BLOCO : TK_FUNC_START CMDS TK_FUNC_END { gera_bloco($$,$2); }
 
-CMD_ATRIB : VA TK_AT_IGUAL E;
-  | VA "+=" E
-  | VA "-=" E
+CMD_ATRIB : VA TK_AT_IGUAL E {gera_va($1, $3);}
+  | VA "+=" E {gera_va2(SOMA, "+", $1, $3);}
+  | VA "-=" E {gera_va2(SUBTR, "-", $1, $3);}
   ;
 
-VA : TK_ID
-  | TK_ID '[' E ']'
-  | TK_ID '[' E ']' '[' E ']'
+VA : TK_ID {gera_va($$, $1);}
+  | TK_ID '[' E ']'  {gera_va_vetor($$, $1, $3);}
+  | TK_ID '[' E ']' '[' E ']' {gera_matriz($$, $1, $3, $5);}
   ;
  
 CMD_IF : TK_FUNC_IF '(' TEST ')' CMD {gera_if($$, $3, $5);}
