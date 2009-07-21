@@ -752,15 +752,21 @@ void gera_codigo_VG_vazio(atributos_compiladores &esquerda)
 	esquerda.tipo.modifica_valores("");
 }
 
-void gera_codigo_LID(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &terceiro)
+void gera_codigo_LID(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &terceiro = NULL)
 {
 	if(terceiro != NULL)
 	{
-		
+		primeiro.tipo.base = terceiro.tipo.base = esquerda.tipo.base;
+		esquerda.codigo = terceiro.codigo + " ," + primeiro.codigo;
+		adiciona_var(primeiro.valor,primeiro.tipo);
+		var.back()[primeiro.valor]->tipo.constante = primeiro.tipo.constante;
 	}
 	else
 	{
-		
+		primeiro.tipo.base = esquerda.tipo.base;
+		esquerda.codigo = esquerda.tipo.base + " " +terceiro.codigo;
+		adiciona_var(primeiro.valor,primeiro.tipo);
+		var.back()[primeiro.valor]->tipo.constante = primeiro.tipo.constante;
 	}
 
 }
