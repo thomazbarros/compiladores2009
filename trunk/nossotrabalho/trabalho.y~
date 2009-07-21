@@ -26,15 +26,15 @@ int yylex();
 %left '*' '/'
 %left '%'
 %right '+='
-%
+%nonassoc '<' '>'
 
 %% 
-S : VG S 
-  | funcao S 
-  | main 
+S : VG main { gera_inicializacao($$,$1,$2); }
   ;
 
-VG : tipo LID;
+VG : tipo LID ';' VG { gera_codigo_VG($$,$1,$2,$3);}
+  | funcao VG {gera_codigo_VG($$,$1,$2);}
+  | {gera_codigo_VG_vazio($$);}
   ;
 
 tipo :  TK_VAR_INT 	
@@ -42,7 +42,6 @@ tipo :  TK_VAR_INT
   | TK_VAR_REAL	
   | TK_VAR_CHAR
   | TK_VAR_BOOL	
-  | '(' E ')'
   ;
 
 LID : V ',' LID
@@ -195,9 +194,7 @@ ARGS : E'.'ARGS
   | E
   ;
 
-CMD_ENTRADA : TK_FUNC_ENT '(' TK_ID ')' ';' { gera_entrada($$,$3)}
-  | TK_FUNC_ENT '(' TK_ID '[' E ']' ')' ';' { gera_entrada($$,$3,$5,"vetor")}
-  | TK_FUNC_ENT '(' TK_ID '[' E ']' '[' E ']' ')' ';' { gera_entrada($$,$3,$5,$7,"matriz")}
+CMD_ENTRADA : TK_FUNC_ENT '(' F ')' ';' { gera_entrada($$,$3)}
   ;
 
 CMD_SAIDA : TK_FUNC_SAIDA '(' E ')' ';' {gera_saida($$,$3);} 
