@@ -45,7 +45,7 @@ tipo :  TK_VAR_INT
   ;
 
 LID : V ',' LID { gera_codigo_LID($$,$1,$3);}
-  | V {gera_codigo_LID($$,$1);}
+  | V { gera_codigo_LID($$,$1); }
   ; 
 
 V : TK_ID {gera_variavel($$, $1);}
