@@ -57,6 +57,7 @@ int nivel = 1;
 int total_niveis = 0;
 int numLinha = 1;
 map<string, unsigned int> contador;
+string variaveis = "";
 
 string[][NUM_TIPOS][NUM_TIPOS] tabela_operacoes = 
 	{
@@ -701,10 +702,10 @@ void gera_matriz(variavel &n, variavel n2, atributos_compilador n3, atributos_co
 
 void gera_entrada(atributos_compilador &esquerda, atributos_compilador &terceiro)
 {
-	esquerda.codigo = "cin >> "+ terceiro.valor +";"
+	esquerda.codigo = "cin >> "+ terceiro.valor +";\n"
 }
 
-void gera_saida(atributos_compilador &esquerda , atributos_compilador &terceiro = Null, bool pulaLinha = false, bool vazio = false)
+void gera_saida(atributos_compilador &esquerda , atributos_compilador &terceiro = NULL, bool pulaLinha = false, bool vazio = false)
 {
 	if(pulaLinha == true && vazio == true)
 	{
@@ -712,7 +713,7 @@ void gera_saida(atributos_compilador &esquerda , atributos_compilador &terceiro 
 	}
 	else
 	{
-		if(terceiro == Null)
+		if(terceiro == NULL)
 		{
 			yyerror("Erro na saida ");		
 		}
@@ -723,4 +724,35 @@ void gera_saida(atributos_compilador &esquerda , atributos_compilador &terceiro 
 			esquerda.codigo = "cout <<" + terceiro.valor + "<< endl;\n";	
 		}
 	}
+}
+
+void gera_inicializacao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo)
+{
+	esquerda.codigo = "#include <iostream>\n#include <cstdlib>\nusing namespace std;\n\n";
+	esquerda.codigo += declaracao_de_temp() + variaveis + primeiro.codigo + segundo.codigo;
+}
+
+void gera_codigo_VG(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo,atributos_compilador &terceiro = NULL)
+{
+	if(terceiro != NULL)
+	{	
+		esquerda.codigo = segundo.codigo + terceiro.codigo; 
+		segundo.tipo = primeiro.tipo;	
+	}
+	else
+	{
+		esquerda.codigo = primeiro.codigo + segundo.codigo;
+	}
+}
+
+void gera_codigo_VG_vazio(atributos_compiladores &esquerda)
+{
+	esquerda.codigo = "";
+	esquerda.valor = "";
+	esquerda.tipo.modifica_valores("");
+}
+
+void gera_codigo_LID(atributos_compilador &esquerda, atributos_compilador &primeiro)
+{
+
 }

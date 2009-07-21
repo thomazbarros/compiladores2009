@@ -27,15 +27,14 @@ int yylex();
 %left '%'
 %right '+='
 %nonassoc '<' '>'
-%
 
 %% 
-S : VG S 
-  | funcao S 
-  | main 
+S : VG main { gera_inicializacao($$,$1,$2); }
   ;
 
-VG : tipo LID;
+VG : tipo LID ';' VG { gera_codigo_VG($$,$1,$2,$3);}
+  | funcao VG {gera_codigo_VG($$,$1,$2);}
+  | {gera_codigo_VG_vazio($$);}
   ;
 
 tipo :  TK_VAR_INT 	
@@ -43,11 +42,10 @@ tipo :  TK_VAR_INT
   | TK_VAR_REAL	
   | TK_VAR_CHAR
   | TK_VAR_BOOL	
-  | '(' E ')'
   ;
 
-LID : V ',' LID
-  | V
+LID : V ',' LID { gera_codigo_LID($$,$1,$3);}
+  | V {gera_codigo_LID($$,$1);}
   ; 
 
 V : TK_ID {gera_variavel($$, $1);}
