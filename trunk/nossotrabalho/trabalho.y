@@ -48,9 +48,9 @@ LID : V ',' LID { gera_codigo_LID($$,$1,$3);}
   | V { gera_codigo_LID($$,$1); }
   ; 
 
-V : TK_ID {gera_variavel($$, $1);}
-  | TK_ID '[' TK_NUM ']' {gera_vetor($$, $1, $3);}
-  | TK_ID '[' TK_NUM ']' '[' TK_NUM ']' {gera_matriz($$, $1, $3, $5);}
+V : TK_ID {gera_variavel("", $$, $1);}
+  | TK_ID '[' TK_NUM ']' {gera_vetor("", $$, $1, $3);}
+  | TK_ID '[' TK_NUM ']' '[' TK_NUM ']' {gera_matriz("", $$, $1, $3, $5);}
   ;
 
 funcao : nome_funcao corpo { gera_codigo_funcao($$,$1,$2); }
@@ -81,8 +81,8 @@ Params : Param ',' Params
   | Param
   ;
 
-Param : tipo TK_ID
-  | tipo '*' TK_ID
+Param : tipo TK_ID {gera_variavel("", $$, $2);}
+  | tipo '*' TK_ID {gera_variavel("*", $$, $2);} 
   ;
 
 main : TK_FUNC_PRINC corpo {declara_main($$,$2);}
