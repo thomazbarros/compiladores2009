@@ -33,6 +33,8 @@ SENTENCA		\"([^\"\n]|(\\\"))*\"
 "DIV"		{ yylval.valor = yytext; return TK_OP_DIVINT; }
 
 "="		{ yylval.valor = yytext; return TK_AT_IGUAL; }
+"+="		{ yylval.valor = yytext; return TK_AT_MAIS; }
+"-="		{ yylval.valor = yytext; return TK_AT_MENOS; }
 
 "=="		{ yylval.valor = yytext; return TK_CMP_IGUAL; }
 "!="		{ yylval.valor = yytext; return TK_CMP_DIF; }

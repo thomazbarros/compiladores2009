@@ -1,10 +1,19 @@
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <vector>
+#include <deque>
+#include <stack>
+#include <map>
+using namespace std;
+
 #define YYSTYPE atributos_compilador
 #define SOMA 0
 #define SUBTR 1
 #define MULT 2
 #define DIV 3
 #define MOD 4
-#define NUM_TIPOS = 5
+#define NUM_TIPOS 5
 #define INTEIRO 1
 #define REAL 2
 #define CARACTER 3
@@ -16,39 +25,40 @@ ordem das operacoes : SOMA,SUBTRACAO,MULTIPLICACAO,DIVISAO,MODULO
 ordem dos tipos : int, double, char, string, bool
 vazio = ERRO 
 */
-typedef struct {
+struct Tipo{
     string base;
-    int n_dim;
-    int d[2];
+    int n_dim,dim1,dim2;
     
+    Tipo(string base, int ndim = 0, int dim1 = 1, int dim2 = 1) : base(base),n_dim(ndim), dim1(dim1), dim2(dim2) {}
     void modifica_valores(string nova_base, int novo_n_dim = 0, int d0 = 1, int d1 =1)
     {
 	base = nova_base;
 	n_dim = novo_n_dim;
-	d[0] = d0;
-	d[1] = d1;
+	dim1 = d0;
+	dim2 = d1;
     }
-}estrutura_tipos; 
+}; 
 
-typedef struct {
-    estrutura_tipos tipo;
+struct atributos_compilador{
+    Tipo tipo;
     string valor,codigo;
-}atributos_compilador; 
+    atributos_compilador() : valor(""), tipo(""), codigo(""){}
+}; 
 
-typedef struct 
+struct variavel
 {
 	string nome;
 	Tipo tipo;
-	Variavel(string nome, string base, int ndim=0, int dim1=1, int dim2=1) : nome(nome), tipo(base, ndim, dim1, dim2) {}
-}variavel;
+	variavel(string nome, string base, int ndim=0, int dim1=1, int dim2=1) : nome(nome), tipo(base, ndim, dim1, dim2) {}
+};
 
-typedef struct
+struct funcao
 {
 	string nome;
 	Tipo tipo;
 	vector<Tipo> param;
-	Funcao(string nome, string base, int ndim=0, int dim1=1, int dim2=1) : nome(nome), tipo(base, ndim, dim1, dim2) {}
-}funcao;
+	funcao(string nome, string base, int ndim=0, int dim1=1, int dim2=1) : nome(nome), tipo(base, ndim, dim1, dim2) {}
+};
 
 deque<map <string, variavel*> > var;
 map<string, funcao*> func_global;
@@ -57,55 +67,170 @@ vector<int> nivel;
 int total_niveis = 0;
 int numLinha = 1;
 map<string, unsigned int> contador;
-string variaveis = "";
+//string variaveis = "";
+string lista_de_variaveis;
 
-string[][NUM_TIPOS][NUM_TIPOS] tabela_operacoes = 
+string tabela_operacoes [][NUM_TIPOS][NUM_TIPOS] = {
 	{
-		{"int","double","char","",""}
-		{"double","double","","",""}
-		{"","char","char","string",""}
-		{"","","","","bool"}
-		{"","","string","string",""}
+		{"int","double","char","",""},
+		{"double","double","","",""},
+		{"","char","char","string",""},
+		{"","","","","bool"},
+		{"","","string","string",""},
 	},
 	{
-                {"int","double","","",""}
-                {"double","double","","",""}
-                {"","","","",""}
-                {"","","","",""}
-                {"","","","",""}
+                {"int","double","","",""},
+                {"double","double","","",""},
+                {"","","","",""},
+                {"","","","",""},
+                {"","","","",""},
         },
 	{
-                {"int","double","","",""}
-                {"double","double","","",""}
-                {"","","","",""}
-                {"","","","","bool"}
-                {"","","","",""}
+                {"int","double","","",""},
+                {"double","double","","",""},
+                {"","","","",""},
+                {"","","","","bool"},
+                {"","","","",""},
         },
 	{
-                {"int","double","","",""}
-                {"double","double","","",""}
-                {"","","","",""}
-                {"","","","",""}
-                {"","","","",""}
+                {"int","double","","",""},
+                {"double","double","","",""},
+                {"","","","",""},
+                {"","","","",""},
+                {"","","","",""},
         },
 	{
-                {"int","","","",""}
-                {"","","","",""}
-                {"","","","",""}
-                {"","","","",""}
-                {"","","","",""}
-        };
+                {"int","","","",""},
+                {"","","","",""},
+                {"","","","",""},
+                {"","","","",""},
+                {"","","","",""},
+        }
+};
 		
-void yyerror(string& erro)
+void yyerror(string erro)
 {
-    cout << s << "Linha :" << numLinha << ";" << endl;
+    cout << erro << "Linha :" << numLinha << ";" << endl;
     exit(1);
+}
+
+string inttostr(int n) 
+{
+	char buf[20];
+	sprintf(buf,"%d",n);
+	return buf;
+}
+
+int strtoint(string st) 
+{
+	int n;
+	sscanf(st.c_str(),"%d",&n);
+	return n;
+}
+
+string tipo_resultado(int tipo, Tipo &primeiro, Tipo &segundo)
+{
+    int i,j;
+    
+    if(primeiro.base == "int"){
+	i = INTEIRO;
+    }
+    else
+    {
+	if(primeiro.base == "double")
+	{
+	    i = REAL;
+	}
+	else
+	{
+	    if(primeiro.base == "char")
+	    {
+		i = CARACTER;
+	    }
+	    else
+	    {
+		if(primeiro.base == "string")
+		{
+		    i = STRING;
+		}
+	   	else
+		{
+		    if(primeiro.base == "bool")
+		    {
+			i = BOOLEANO;
+		    }
+		    else
+		    {
+			yyerror("Tipo "+primeiro.base+" inexistente");
+    		    }
+		}
+	    }
+	}
+    }
+
+    if(segundo.base == "int"){
+	j = INTEIRO;
+    }
+    else
+    {
+	if(segundo.base == "double")
+	{
+	    j = REAL;
+	}
+	else
+	{
+	    if(segundo.base == "char")
+	    {
+		j = CARACTER;
+	    }
+	    else
+	    {
+		if(segundo.base == "string")
+		{
+		    j = STRING;
+		}
+	   	else
+		{
+		    if(segundo.base == "bool")
+		    {
+			j = BOOLEANO;
+		    }
+		    else
+		    {
+			yyerror("Tipo"+segundo.base+"inexistente");
+    		    }
+		}
+	    }
+	}
+    }
+    if(tabela_operacoes[tipo][i][j] == "")
+    {
+	yyerror("Operacao invalida entre "+primeiro.base+" e "+segundo.base);
+    }
+    return tabela_operacoes[tipo][i][j];
+
+}
+
+string transforma_variavel(const string &n)
+{
+	if(contador.find(n) == contador.end())
+	{
+		contador[n] = 0;
+	}
+	else
+	{
+		++contador[n];
+	}
+
+	string n2 = "t_" + n + inttostr(contador[n]);
+
+	return n2;
 }
 
 void realizar_operacao(int tipo, atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo)
 {
     string operador;
-    esquerda.tipo = tipo_resultado(tipo,primeiro.tipo,segundo.tipo)
+    esquerda.tipo = tipo_resultado(tipo,primeiro.tipo,segundo.tipo);
     switch(tipo)
     {
 	case SOMA : 
@@ -115,7 +240,7 @@ void realizar_operacao(int tipo, atributos_compilador &esquerda, atributos_compi
 	    operador = " - ";
 	    break;
 	case MULT :
-	    operador = " * ".
+	    operador = " * ";
 	    break;
 	case DIV :
 	    operador = " / ";
@@ -124,93 +249,73 @@ void realizar_operacao(int tipo, atributos_compilador &esquerda, atributos_compi
 	    operador = " % ";
 	    break;
 	default :
-	    yyerror("Operador invalido : " + int_to_str(tipo));	    
+	    yyerror("Operador invalido : " + inttostr(tipo));	    
     }
     esquerda.valor = transforma_variavel(esquerda.tipo.base);
     esquerda.codigo = primeiro.codigo + segundo.codigo + esquerda.valor + " = " + primeiro.valor + operador + segundo.valor + ";\n";
 }
 
-void tipo_resultado(int tipo, string &primeiro, string &segundo)
+string adiciona_func_global(const string &nome, const string &base, int ndim, int dim1, int dim2)
 {
-    int i,j;
-    
-    if(primeiro == "int"){
-	i = INTEIRO;
-    }
-    else
-    {
-	if(primeiro == "double")
+	if(func_global.find(nome) == func_global.end())
 	{
-	    i = REAL;
+		func_global[nome] = new funcao(nome, base, ndim, dim1, dim2);
+		return nome;
 	}
-	else
-	{
-	    if(primeiro == "char")
-	    {
-		i = CARACTER;
-	    }
-	    else
-	    {
-		if(primeiro == "string")
-		{
-		    i = STRING;
-		}
-	   	else
-		{
-		    if(primeiro == "bool")
-		    {
-			i = BOOLEANO;
-		    }
-		    else
-		    {
-			yyerror("Tipo"+primeiro+"inexistente")
-    		    }
-		}
-	    }
-	}
-    }
 
-    if(segundo == "int"){
-	j = INTEIRO;
-    }
-    else
-    {
-	if(segundo == "double")
-	{
-	    j = REAL;
-	}
-	else
-	{
-	    if(segundo == "char")
-	    {
-		j = CARACTER;
-	    }
-	    else
-	    {
-		if(segundo == "string")
-		{
-		    j = STRING;
-		}
-	   	else
-		{
-		    if(segundo == "bool")
-		    {
-			j = BOOLEANO;
-		    }
-		    else
-		    {
-			yyerror("Tipo"+segundo+"inexistente")
-    		    }
-		}
-	    }
-	}
-    }
-    if(tabela_operacoes[tipo][i][j] == "")
-    {
-	yyerror("Operacao invalida entre "+primeiro+" e "+segundo);
-    }
-    return tabela_operacoes[tipo][i][j];
+	yyerror("Ja existe uma funcao com o nome " + nome);
+	return "";
+}
 
+string adiciona_func_global(const string &nome, const Tipo &tipo)
+{
+	return adiciona_func_global(nome, tipo.base, tipo.n_dim, tipo.dim1, tipo.dim2);
+}
+
+void adiciona_var(const string &nome, const string &base, int ndim, int dim1, int dim2)
+{
+	string str;
+
+	str = nome;
+
+	if(var.back().find(nome) == var.back().end())
+	{
+		var.back().insert( make_pair(nome, new variavel(nome, base, ndim, dim1, dim2)));
+		return;
+	}
+
+	yyerror("Ja existe uma variavel com o nome " + nome);
+
+}
+
+void adiciona_var(const string &nome, const Tipo &tipo) 
+{
+	adiciona_var(nome, tipo.base, tipo.n_dim, tipo.dim1, tipo.dim2);
+}
+
+string valor_inicial_padrao(atributos_compilador atr)
+{
+	if(atr.tipo.base == "int")
+	{
+		return "0";
+	}
+	if(atr.tipo.base == "double")
+	{
+		return "0.0";
+	}
+	if(atr.tipo.base == "char")
+	{
+		return "'\0'";
+	}
+	if(atr.tipo.base == "string")
+	{
+		return "\"\"";
+	}
+	if(atr.tipo.base == "bool")
+	{
+		return "false";
+	}
+	yyerror("Tipo desconhecido : "+  atr.tipo.base);
 }
 
 void gera_nome_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo, atributos_compilador &quarto)
@@ -218,9 +323,9 @@ void gera_nome_funcao(atributos_compilador &esquerda, atributos_compilador &prim
     esquerda.valor = segundo.valor;
     esquerda.codigo = primeiro.codigo;
     esquerda.tipo = primeiro.tipo;
-    esquerda.tipo.modifica_valores(primeiro.tipo.base,segundo.tipo.n_dim,segundo.tipo.d[0],segundo.tipo.d[1]);
+    esquerda.tipo.modifica_valores(primeiro.tipo.base,segundo.tipo.n_dim,segundo.tipo.dim1,segundo.tipo.dim2);
     
-    if(esquerda.n_dim > 0)
+    if(esquerda.tipo.n_dim > 0)
     {
     	esquerda.codigo += "*";
     }
@@ -232,13 +337,13 @@ void gera_nome_funcao(atributos_compilador &esquerda, atributos_compilador &prim
     else
     {
     	esquerda.codigo += esquerda.tipo.base + "*";
-	int temp = esquerda.tipo.d[0];
-	if(esquerda.tipo.d[0] > 1)
+	int temp = esquerda.tipo.dim1;
+	if(esquerda.tipo.dim1 > 1)
 	{
-	    temp *= esquerda.tipo.d[1];
+	    temp *= esquerda.tipo.dim2;
 	}
         
-	esquerda.codigo += " _ret;\n_ret = new " + esquerda.tipo.base + "[" +	int_to_str(temp) + "];\n";
+	esquerda.codigo += " _ret;\n_ret = new " + esquerda.tipo.base + "[" +	inttostr(temp) + "];\n";
    
     }
     adiciona_var("_ret",esquerda.tipo);
@@ -249,19 +354,10 @@ void gera_nome_funcao(atributos_compilador &esquerda, atributos_compilador &prim
     }
 }
 
-
-string inttostr(int n)
+string label(const char *n)
 {
-	char buf[20];
-	sprintf(buf,"%d",n);
-	return buf;
-}
-
-int strtoint(String st)
-{
-	int n;
-	sscanf(st.c_str(),"%d",&n);
-	return n;
+	static int num = 1;
+	return string("P_") + n + inttostr(num++);
 }
 
 void gera_if(atributos_compilador &n, atributos_compilador n2, atributos_compilador n3)
@@ -315,39 +411,6 @@ atributos_compilador n5)
 	n.codigo += n4.codigo + n5.codigo + "goto " + inicio + ";\n" + fim + ":;\n";
 }
 
-string label(const char *n)
-{
-	static int num = 1;
-	return string("P_") + n + int_to_src(num++);
-}
-
-string adiciona_func_global(const string &nome, const string &base, int ndim, int dim1, int dim2)
-{
-	if(func_global.find(nome) == func_global.end())
-	{
-		func_global[nome] = new Funcao(nome, base, ndim, dim1, dim2);
-		return nome;
-	}
-
-	yyerror("Ja existe uma funcao com o nome " + nome);
-	return "";
-}
-
-string transforma_variavel(const string &n)
-{
-	if(contador.find(n) == contador.end())
-	{
-		contador[n] = 0;
-	}
-	else
-	{
-		++contador[n];
-	}
-
-	string n2 = "t_" + n + int_to_str(contador n);
-
-	return n2;
-}
 
 void gera_n(string n, atributos_compilador &n2, atributos_compilador n3, atributos_compilador n4)
 {
@@ -369,62 +432,26 @@ void gera_n(string n, atributos_compilador &n2, atributos_compilador n3, atribut
 
 void gera_test(string n, atributos_compilador &n2, atributos_compilador  n3, atributos_compilador n4)
 {
-	if(n3.tipo.base != "bool" || n4.tipo.base != "bool" || n3.tipo.ndim > 0 || n4.tipo.ndim > 0)
+	if(n3.tipo.base != "bool" || n4.tipo.base != "bool" || n3.tipo.n_dim > 0 || n4.tipo.n_dim > 0)
 		yyerror("Não é possível fazer o teste.");
 
 	n2.valor = transforma_variavel("bool");
 	n2.codigo = n3.codigo + n4.codigo + n2.valor + " = " + n3.valor + ' ' + n + ' ' + n4.valor + ";\n";
 }
 
-void adiciona_var(const string &nome, const string &base, int ndim, int dim1, int dim2)
+bool verifica_existencia_funcao(atributos_compilador &atr)
 {
 	string str;
 
-	str = nome;
+	str = atr.valor.substr(0, atr.valor.find_first_of('['));
 
-	if(var.back().find(nome) == var.back().end())
+	if(func_global.find(str) == func_global.end())
 	{
-		var.back().insert( make_pair(nome, new Variavel(nome, base, ndim, dim1, dim2, constante)));
-		return;
-	}
+		return false;
+	}	
 
-	yyerror("Ja existe uma variavel com o nome " + nome);
-
-}
-
-string adiciona_func_global(const string &nome, const Tipo &tipo)
-{
-	return adiciona_func_global(nome, tipo.base, tipo.ndim, tipo.dim1, tipo.dim2);
-}
-
-void adiciona_var(const string &nome, const Tipo &tipo)
-{
-	adiciona_var(nome, tipo.base, tipo.ndim, tipo.dim1, tipo.dim2);
-}
-
-string valor_inicial_padrao(atributos_compilador atr)
-{
-	if(atr.tipo.base == "int")
-	{
-		return "0";
-	}
-	if(atr.tipo.base == "double")
-	{
-		return "0.0";
-	}
-	if(atr.tipo.base == "char")
-	{
-		return "'\0'";
-	}
-	if(atr.tipo.base == "string")
-	{
-		return "\"\"";
-	}
-	if(atr.tipo.base == "bool")
-	{
-		return "false";
-	}
-	yyerror("Tipo desconhecido : "+  atr.tipo.base);
+	atr.tipo = func_global[str]->tipo;
+	return true;
 }
 
 void chama_funcao(atributos_compilador &esquerda,atributos_compilador &primeiro, atributos_compilador &terceiro)
@@ -447,28 +474,13 @@ void chama_funcao(atributos_compilador &esquerda,atributos_compilador &primeiro,
 		esquerda.codigo += " = " + primeiro.valor + "(" + terceiro.valor + ");\n";
 		
 		int i = 0;
-		for(atributo *temp = &terceiro; temp != NULL ; temp = temp->prox){
+		for(atributos_compilador *temp = &terceiro; temp != NULL ; temp = temp->prox){
 			if(i >= ((func_global[primeiro.valor])->param).size()) yyerror("Numero de parametros incorreto: " + primeiro.valor);
 			if(((func_global[primeiro.valor])->param).at(i).base != temp->tipo.base) yyerror("Tipo de parametro incorreto: " + primeiro.valor + "\n" + temp->tipo.base + " != " + ((func_global[primeiro.valor])->param).at(i).base);
 			i++;
 		}
 	}
-	yyerror("A funcao com nome "+ +" nao existe");
-}
-
-bool verifica_existencia_funcao(atributos_compilador &atr)
-{
-	string str;
-
-	str = atr.valor.substr(0, atr.valor.find_first_of('['));
-
-	if(func_global.find(str) == func_global.end())
-	{
-		return false;
-	}	
-
-	atr.tipo = func_global[str]->tipo;
-	return true;
+	yyerror("A funcao com nome "+primeiro.valor+" nao existe");
 }
 
 void cria_id(atributos_compilador &esquerda,atributos_compilador &primeiro)
@@ -558,13 +570,13 @@ void expressoes_logicas(string logica,atributos_compilador &esquerda, atributos_
 void sobe_nivel()
 {
 	total_niveis++;
-	nivel_atual = total_niveis;
+	nivel.push_back(total_niveis);
 	var.push_back(*(new map<string, variavel*>));
 	
 }
 void desce_nivel()
 {
-	nivel_atual--;
+	nivel.pop_back();
 	var.pop_back();
 }
 
@@ -575,12 +587,12 @@ string declarar_variaveis_temporarias()
 	if(contador.find("int") != contador.end())
 	{
 		resultado += "int ";
-		for(int i = 0; i < contador["int"].size(); i++)
+		for(int i = 0; i < contador["int"]; i++)
 		{
-			resultado += "_int"+inttostr(i)+"=0"
-			if(i+1 != contador["int"].size())
+			resultado += "_int"+inttostr(i)+"=0";
+			if(i+1 != contador["int"])
 			{
-				resultado += ","
+				resultado += ",";
 			}
 		}
 		resultado += ";\n";
@@ -588,48 +600,48 @@ string declarar_variaveis_temporarias()
 	if(contador.find("bool") != contador.end())
 	{
 		resultado += "int ";
-		for(int i = 0; i < contador["bool"].size(); i++)
+		for(int i = 0; i < contador["bool"]; i++)
 		{
-			resultado += "_bool"+inttostr(i)
-			if(i+1 != contador["bool"].size())
+			resultado += "_bool"+inttostr(i);
+			if(i+1 != contador["bool"])
 			{
-				resultado += ","
+				resultado += ",";
 			}
 		}
 		resultado += ";\n";
 	}
 	if(contador.find("char") != contador.end())
 	{
-		for(int i = 0; i < contador["char"].size(); i++)
+		for(int i = 0; i < contador["char"]; i++)
 		{
-			resultado += "_char"+inttostr(i)
-			if(i+1 != contador["char"].size())
+			resultado += "_char"+inttostr(i);
+			if(i+1 != contador["char"])
 			{
-				resultado += ","
+				resultado += ",";
 			}
 		}
 		resultado += ";\n";	
 	}
 	if(contador.find("string") != contador.end())
 	{
-		for(int i = 0; i < contador["string"].size(); i++)
+		for(int i = 0; i < contador["string"]; i++)
 		{
-			resultado += "_string"+inttostr(i)
-			if(i+1 != contador["string"].size())
+			resultado += "_string"+inttostr(i);
+			if(i+1 != contador["string"])
 			{
-				resultado += ","
+				resultado += ",";
 			}		
 		}
 		resultado += ";\n";		
 	}
 	if(contador.find("double") != contador.end())
 	{
-		for(int i = 0; i < contador["double"].size(); i++)
+		for(int i = 0; i < contador["double"]; i++)
 		{
-			resultado += "_double"+inttostr(i)
-			if(i+1 != contador["double"].size())
+			resultado += "_double"+inttostr(i);
+			if(i+1 != contador["double"])
 			{
-				resultado += ","
+				resultado += ",";
 			}		
 		}
 		resultado += ";\n";		
@@ -644,7 +656,7 @@ void declara_main(atributos_compilador &esquerda, atributos_compilador &segundo)
 	var.pop_back();
 }
 
-void gera_codigo_funcao(atributos_compilador &esquerda, atributos_compilador &segundo){
+void gera_codigo_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo){
 	
 	esquerda.codigo = segundo.codigo + "return _ret;\n}\n";
 	esquerda.valor = primeiro.valor;
@@ -652,134 +664,115 @@ void gera_codigo_funcao(atributos_compilador &esquerda, atributos_compilador &se
 	desce_nivel();
 }
 
-void gera_variavel(string e, variavel &n, variavel n2)
+void gera_variavel(/*string e,*/ atributos_compilador &n, atributos_compilador &n2)
 {
 	n = n2;
-	n.codigo = e + n2.valor + "_"  + inttosrc(nivel.back()) + ";\n";
+	n.codigo = /*e +*/ n2.valor + "_"  + inttostr(nivel.back()) + ";\n";
 }
 
-void gera_vetor(string e, variavel &n, variavel n2, atributos_compilador n3)
+void gera_vetor(/*string e,*/ atributos_compilador &n, atributos_compilador &n2, atributos_compilador &n3)
 {
 	n.tipo = n2.tipo;
-	n.ndim = 1;
-	n.dim1 = n3.valor; 
-	n.codigo = e + n2.valor + "_" + inttosrc(nivel.back()) + "[" + inttosrc(n3.valor) + "]; \n";
+	n.tipo.n_dim = 1;
+	n.tipo.dim1 = strtoint(n3.valor); 
+	n.codigo = /*e +*/ n2.valor + "_" + inttostr(nivel.back()) + "[" + n3.valor + "]; \n";
 }
 
-void gera_matriz(string e, variavel &n, variavel n2, atributos_compilador n3, atributos_compilador n4)
+void gera_matriz(/*string e,*/ atributos_compilador &n, atributos_compilador &n2, atributos_compilador &n3, atributos_compilador &n4)
 {
 	n.tipo = n2.tipo;
-	n.ndim = 2;
-	int n5 = n3.valor * n4.valor;
-	n.dim1 = n3.valor;
-	n.dim2 = n4.valor;
-	n.codigo = e + n2.valor + "_" + inttosrc(nivel.back()) + "[" + inttosrc(n5) + "]; \n";
+	n.tipo.n_dim = 2;
+	int n5 = strtoint(n3.valor) * strtoint(n4.valor);
+	n.tipo.dim1 = strtoint(n3.valor);
+	n.tipo.dim2 = strtoint(n4.valor);
+	n.codigo = /*e*/ + n2.valor + "_" + inttostr(nivel.back()) + "[" + inttostr(n5) + "]; \n";
 }
 
 void gera_entrada(atributos_compilador &esquerda, atributos_compilador &terceiro)
 {
-	esquerda.codigo = "cin >> "+ terceiro.valor +";\n"
+	esquerda.codigo = "cin >> "+ terceiro.valor +";\n";
 }
 
-void gera_saida(atributos_compilador &esquerda , atributos_compilador &terceiro = NULL, bool pulaLinha = false, bool vazio = false)
+void gera_saida(atributos_compilador &esquerda , atributos_compilador &terceiro)
 {
-	if(pulaLinha == true && vazio == true)
-	{
-		esquerda.codigo = "cout << endl;\n";
-	}
-	else
-	{
-		if(terceiro == NULL)
-		{
-			yyerror("Erro na saida ");		
-		}
-		esquerda.codigo = "cout <<" + terceiro.valor + ";\n";  
+	esquerda.codigo = "cout <<" + terceiro.valor + ";\n";  
+}
 
-		if(pulaLinha == true)
-		{
-			esquerda.codigo = "cout <<" + terceiro.valor + "<< endl;\n";	
-		}
-	}
+void gera_saida_PL(atributos_compilador &esquerda)
+{
+	esquerda.codigo = "cout << endl;\n";
+}
+
+void gera_saida_PL_EXP(atributos_compilador &esquerda , atributos_compilador &terceiro)
+{
+	esquerda.codigo = "cout <<" + terceiro.valor + "<< endl;\n";	
 }
 
 void gera_inicializacao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo)
 {
 	esquerda.codigo = "#include <iostream>\n#include <cstdlib>\nusing namespace std;\n\n";
-	esquerda.codigo += declaracao_de_temp() + variaveis + primeiro.codigo + segundo.codigo;
+	esquerda.codigo += declarar_variaveis_temporarias() + lista_de_variaveis + primeiro.codigo + segundo.codigo;
 }
 
-void gera_codigo_VG(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo,atributos_compilador &terceiro = NULL)
+void gera_codigo_VG_LID(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo,atributos_compilador &terceiro)
 {
-	if(terceiro != NULL)
-	{	
-		esquerda.codigo = segundo.codigo + terceiro.codigo; 
-		segundo.tipo = primeiro.tipo;	
-	}
-	else
-	{
-		esquerda.codigo = primeiro.codigo + segundo.codigo;
-	}
+	esquerda.codigo = segundo.codigo + terceiro.codigo; 
+	segundo.tipo = primeiro.tipo;	
 }
 
-void gera_codigo_VG_vazio(atributos_compiladores &esquerda)
+void gera_codigo_VG_funcao(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &segundo)
+{
+	esquerda.codigo = primeiro.codigo + segundo.codigo;
+}
+
+void gera_codigo_VG_vazio(atributos_compilador &esquerda)
 {
 	esquerda.codigo = "";
 	esquerda.valor = "";
 	esquerda.tipo.modifica_valores("");
 }
 
-void gera_codigo_LID(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &terceiro = NULL)
+void gera_codigo_LID_maisvar(atributos_compilador &esquerda, atributos_compilador &primeiro, atributos_compilador &terceiro)
 {
-	if(terceiro != NULL)
-	{
-		primeiro.tipo.base = terceiro.tipo.base = esquerda.tipo.base;
-		esquerda.codigo = terceiro.codigo + " ," + primeiro.codigo;
-		adiciona_var(primeiro.valor,primeiro.tipo);
-		var.back()[primeiro.valor]->tipo.constante = primeiro.tipo.constante;
-	}
-	else
-	{
-		primeiro.tipo.base = esquerda.tipo.base;
-		esquerda.codigo = esquerda.tipo.base + " " +terceiro.codigo;
-		adiciona_var(primeiro.valor,primeiro.tipo);
-		var.back()[primeiro.valor]->tipo.constante = primeiro.tipo.constante;
-	}
-
+	primeiro.tipo.base = esquerda.tipo.base;
+	esquerda.codigo = terceiro.codigo + " ," + primeiro.codigo;
+	adiciona_var(primeiro.valor,primeiro.tipo);
 }
 
-void gera_FUN_ID(atributos_compilador &esquerda,atributos_compilador &primeiro,atributos_compilador &terceiro = NULL,atributos_compilador &quinto = NULL)
+void gera_codigo_LID(atributos_compilador &esquerda, atributos_compilador &primeiro)
 {
-	if(terceiro == NULL && quinto == NULL)
-	{
-		sobe_nivel();
-		esquerda.codigo = primeiro.codigo;
-		return;	
-	}
-	if(terceiro != NULL & quinto == NULL)
-	{
-		sobe_nivel();
-		esquerda.codigo = primeiro.codigo;
-		esquerda.n_dim = 1;
-		esquerda.dim1 = strtoint(terceiro.valor); 
-		return;	
-	}
-	if(terceiro != NULL & quinto != NULL)
-	{
-		sobe_nivel();
-		esquerda.codigo = primeiro.codigo;
-		esquerda.n_dim = 2;
-		esquerda.dim1 = strtoint(terceiro.valor); 
-		esquerda.dim2 = strtoint(quinto.valor); 		
-		return;	
-	}
-	
-	yyerror("Erro no id da funcao");
+	primeiro.tipo.base = esquerda.tipo.base;
+	esquerda.codigo = esquerda.tipo.base + " " + primeiro.codigo;
+	adiciona_var(primeiro.valor,primeiro.tipo);
+}
+
+void gera_FUN_ID(atributos_compilador &esquerda,atributos_compilador &primeiro)
+{
+	sobe_nivel();
+	esquerda.codigo = primeiro.codigo;
+}
+
+void gera_FUN_ID_vet(atributos_compilador &esquerda,atributos_compilador &primeiro,atributos_compilador &terceiro)
+{
+	sobe_nivel();
+	esquerda.codigo = primeiro.codigo;
+	esquerda.tipo.n_dim = 1;
+	esquerda.tipo.dim1 = strtoint(terceiro.valor); 
+}
+
+void gera_FUN_ID_mat(atributos_compilador &esquerda,atributos_compilador &primeiro,atributos_compilador &terceiro,atributos_compilador &quinto)
+{
+	sobe_nivel();
+	esquerda.codigo = primeiro.codigo;
+	esquerda.tipo.n_dim = 2;
+	esquerda.tipo.dim1 = strtoint(terceiro.valor); 
+	esquerda.tipo.dim2 = strtoint(quinto.valor); 	
 }
 
 void gera_bloco(atributos_compilador &esquerda,atributos_compilador &segundo)
 {
 	esquerda = segundo;
-	esquerda.valor = int_to_str(nivel.back());
+	esquerda.valor = inttostr(nivel.back());
 	desce_nivel();
 }
 
@@ -788,18 +781,18 @@ void verifica_variavel(atributos_compilador &n)
 	string n2 = n.valor;
 	for(int i = nivel.size() - 1; i >= 0; --i)
 	{
-		if(var[i].find(n) != var.at(i).end())
+		if(var[i].find(n2) != var.at(i).end())
 		{
-			n.tipo = var.at(i)[str]->tipo;
+			n.tipo = var.at(i)[n2]->tipo;
 			if(n.valor != "_ret")
-				n.valor += "_" + int_to_str(nivel[i]);
+				n.valor += "_" + inttostr(nivel[i]);
 			return;
 		}
 	}
 	yyerror("Erro");
 }
 
-void gera_va(variavel &n, variavel n2)
+void gera_va(atributos_compilador &n, atributos_compilador &n2)
 {
 		verifica_variavel(n2);
 		n.codigo = "";
@@ -807,26 +800,26 @@ void gera_va(variavel &n, variavel n2)
 		n.tipo = n2.tipo;
 }
 
-void gera_va_vetor(variavel &n, variavel n2, atributos_compilador n3)
+void gera_va_vetor(atributos_compilador &n, atributos_compilador &n2, atributos_compilador &n3)
 {
 	verifica_variavel(n2);
-	if(n2.tipo.ndim < 1) yyerror("Erro");
-	if(n3.tipo.base != "int" || n3.tipo.ndim > 0) yyerror("Erro");
+	if(n2.tipo.n_dim < 1) yyerror("Erro");
+	if(n3.tipo.base != "int" || n3.tipo.n_dim > 0) yyerror("Erro");
 	string temp1, temp2;
 	temp1 = transforma_variavel("bool");
 	temp2 = label("ELSE");
 	n.tipo = n2.tipo;
-	n.codigo = n3.codigo + temp1 + " = " + int_to_str(n2.tipo.dim1) + " > " + n3.valor + ";\n";
-	n.codigo += "if( " + temp1 + " )\ngoto " + temp2 + ";\ncout <<\"Index fora do alcance da matriz.\" << endl;\nexit(1);\n" + temp3 + ":\n";
+	n.codigo = n3.codigo + temp1 + " = " + inttostr(n2.tipo.dim1) + " > " + n3.valor + ";\n";
+	n.codigo += "if( " + temp1 + " )\ngoto " + temp2 + ";\ncout <<\"Index fora do alcance da matriz.\" << endl;\nexit(1);\n" + temp2 + ":\n";
 	n.valor = n2.valor + "[" + n3.valor + "]";
-	n.tipo.ndim--;
+	n.tipo.n_dim--;
 }
 
-void gera_va_matriz(variavel &n, variavel n2, atributos_compilador n3, atributos_compilador n4)
+void gera_va_matriz(atributos_compilador &n, atributos_compilador &n2, atributos_compilador &n3, atributos_compilador &n4)
 {
 	verifica_variavel(n2);
-	if(n2.tipo.ndim < 2) yyerror("Erro");
-	if(n4.tipo.base != "int" || n4.tipo.ndim > 0 || n3.tipo.base != "int" || n3.tipo.ndim > 0) yyerror("Erro");
+	if(n2.tipo.n_dim < 2) yyerror("Erro");
+	if(n4.tipo.base != "int" || n4.tipo.n_dim > 0 || n3.tipo.base != "int" || n3.tipo.n_dim > 0) yyerror("Erro");
 	string temp1, temp2, temp3, temp4, temp5, temp6;
 	temp1 = transforma_variavel("bool");
 	temp2 = transforma_variavel("bool");
@@ -835,26 +828,34 @@ void gera_va_matriz(variavel &n, variavel n2, atributos_compilador n3, atributos
 	temp5 = label("ELSE");
 	temp6 = transforma_variavel("int");
 	n.tipo = n2.tipo;
-	n.codigo = n4.codigo + n3.codigo + temp1 + " = " + int_to_str(n.tipo.dim1) + " > " + n4.valor + ";\n";
-	n.codigo += temp2 + " = " + int_to_str(n4.tipo.dim2) + " > " + n3.valor + ";\n";
+	n.codigo = n4.codigo + n3.codigo + temp1 + " = " + inttostr(n.tipo.dim1) + " > " + n4.valor + ";\n";
+	n.codigo += temp2 + " = " + inttostr(n4.tipo.dim2) + " > " + n3.valor + ";\n";
 	n.codigo += temp3 + " = " + temp1 + " && " + temp2 + ";\n";
-	n.codigo += temp4 + " = " + n4.valor + " * " + int_to_str(n2.tipo.dim2) + ";\n";
+	n.codigo += temp4 + " = " + n4.valor + " * " + inttostr(n2.tipo.dim2) + ";\n";
 	n.codigo += temp6 + " = " + temp4 + " + "+ n3.valor + ";\n";
-	n.codigo += "if( " + temp3 + " )\ngoto " + temp5  + ";\ncout <<\"Index fora do alcance da matriz.\"\n << endl;\nexit(1);\n" + temp5 + ":\n";
+	n.codigo += "if( " + temp3 + " )\ngoto " + temp5  + ";\n cout <<\"Index fora do alcance da matriz.\"\n << endl;\nexit(1);\n" + temp5 + ":\n";
 	n.valor = n4.valor + "[" + temp6 + "]";
-	n.tipo.ndim = 0;
+	n.tipo.n_dim = 0;
 }
 
-void gera_va2(int n, string n2, variavel &n3, variavel n4)
+void gera_va2(int n, string n2, atributos_compilador &n3, atributos_compilador &n4)
 {
 	n3.tipo = tipo_resultado(n, n3.tipo, n4.tipo);
 	n3.valor = transforma_variavel(n3.tipo.base);
 	n3.codigo = n3.codigo + n4.codigo + n3.valor + " = " + n3.valor + n2 + n4.valor + "\n;";
 }
 
+void gera_vl(atributos_compilador &n, atributos_compilador &n2, atributos_compilador &n3, atributos_compilador &n4)
+{
+	n.codigo = n2.valor + " " + n4.codigo + ", " + n3.codigo;
+	n.tipo.base = n2.tipo.base = n3.tipo.base = n4.tipo.base;
+	adiciona_var(n3.valor, n3.tipo);
+}
+
 void gera_corpo(atributos_compilador &esquerda,atributos_compilador &segundo,atributos_compilador &terceiro)
 {
 	esquerda = terceiro;
-	esquerda.valor = int_to_str(nivel.back());
+	esquerda.valor = inttostr(nivel.back());
 	desce_nivel();
+	lista_de_variaveis += segundo.codigo + ";\n";
 }
