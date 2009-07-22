@@ -10,7 +10,7 @@ funcsecundaria int mdc (int n1,int n2)
 
 	atehquandotiver(j=menor:1;-1)
 	{
-		Se ((n1 MOD j == 0) AND (n2 MOD j == 0))
+		se ((n1 MOD j == 0) AND (n2 MOD j == 0))
 		{
 			saidafunc j;
 		}	
