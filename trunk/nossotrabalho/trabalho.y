@@ -85,7 +85,7 @@ Param : tipo TK_ID {gera_variavel("", $$, $2);}
 main : TK_FUNC_PRINC corpo {declara_main($$,$2);}
   ;
 
-corpo : TK_FUNC_START VL CMDS TK_FUNC_END
+corpo : TK_FUNC_START VL CMDS TK_FUNC_END { gera_corpo($$,$2,$3); }
   ;
 
 VL : tipo LID ';' VL 

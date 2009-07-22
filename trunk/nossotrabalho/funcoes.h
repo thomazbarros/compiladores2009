@@ -851,3 +851,11 @@ void gera_va2(int n, string n2, variavel &n3, variavel n4)
 	n3.valor = transforma_variavel(n3.tipo.base);
 	n3.codigo = n3.codigo + n4.codigo + n3.valor + " = " + n3.valor + n2 + n4.valor + "\n;";
 }
+
+void gera_corpo(atributos_compilador &esquerda,atributos_compilador &segundo,atributos_compilador &terceiro)
+{
+	esquerda = terceiro;
+	esquerda.valor = int_to_str(nivel.back());
+	desce_nivel();
+	lista_de_variaveis += segundo.codigo + ";\n";
+}
