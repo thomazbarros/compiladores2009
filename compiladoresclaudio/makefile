@@ -2,7 +2,7 @@ all: teste entrada
 	./trabalho < entrada
 
 lex.yy.c: trabalho.lex
-	flex trabalho.lex
+	lex trabalho.lex
 
 y.tab.c: trabalho.y
 	yacc trabalho.y
