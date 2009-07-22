@@ -102,22 +102,22 @@ N: CMP_IGUAL
    |CMP_MENORIG
    ;
 
-CMP_IGUAL : E TK_CMP_IGUAL E {gera_n("==", $$, $1, $3);}
+CMP_IGUAL : E TK_CMP_IGUAL E {gera_n("igual", $$, $1, $3);}
   ;
 
-CMP_DIF : E TK_CMP_DIF E {gera_n("!=", $$, $1, $3);}
+CMP_DIF : E TK_CMP_DIF E {gera_n("diferente", $$, $1, $3);}
   ;
 
-CMP_MAIOR : E TK_CMP_MAIOR E {gera_n(">", $$, $1, $3);}
+CMP_MAIOR : E TK_CMP_MAIOR E {gera_n("maior", $$, $1, $3);}
   ;
 
-CMP_MAIORIG : E TK_CMP_MAIORIG E {gera_n(">=", $$, $1, $3);}
+CMP_MAIORIG : E TK_CMP_MAIORIG E {gera_n("maiorigual", $$, $1, $3);}
   ;
 
-CMP_MENOR : E TK_CMP_MENOR E {gera_n("<", $$, $1, $3);}
+CMP_MENOR : E TK_CMP_MENOR E {gera_n("menor", $$, $1, $3);}
   ;
 
-CMP_MENORIG : E TK_CMP_MENORIG E {gera_n("<=", $$, $1, $3);}
+CMP_MENORIG : E TK_CMP_MENORIG E {gera_n("menorigual", $$, $1, $3);}
   ;
 
 TEST : N "&&" N {gera_test("&&", $$, $1, $3);}
