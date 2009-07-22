@@ -1,6 +1,6 @@
 funcsecundaria int fatorial (int n)
 {
-	Se( n < 2)
+	se( n < 2)
 	{
 		saidafunc n;
 	}
