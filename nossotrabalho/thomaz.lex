@@ -54,10 +54,10 @@ SENTENCA		\"([^\"\n]|(\\\"))*\"
 "]"		{ yylval.valor = yytext; return TK_FUNC_END; }
 "funcsecundaria"		{ yylval.valor = yytext; return TK_FUNC_FUNC; }
 "prot"		{ yylval.valor = yytext; return TK_FUNC_PROT; }
-"voltaAew"	{ yylval.valor = yytext; return TK_FUNC_RETURN; }
-"le"		{ yylval.valor = yytext; return TK_FUNC_ENT; }
-"escreve"	{ yylval.valor = yytext; return TK_FUNC_SAIDA; }
-"escrevepl"	{ yylval.valor = yytext; return TK_FUNC_SAIDA_PL; }
+"saidafunc"	{ yylval.valor = yytext; return TK_FUNC_RETURN; }
+"ler"		{ yylval.valor = yytext; return TK_FUNC_ENT; }
+"imprimir"	{ yylval.valor = yytext; return TK_FUNC_SAIDA; }
+"imprimirpl"	{ yylval.valor = yytext; return TK_FUNC_SAIDA_PL; }
 
 "verdade"		{ yylval.valor = yytext; yylval.tipo.base = "bool"; return TK_BOOL; }
 "mentira"		{ yylval.valor = yytext; yylval.tipo.base = "bool"; return TK_BOOL; }
