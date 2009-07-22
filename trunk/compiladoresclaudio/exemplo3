@@ -1,0 +1,32 @@
+funcsecundaria int mdc (int n1,int n2)
+{
+	int menor,j;
+
+	Se (n1 < n2)
+	{	
+		menor = n1;
+	}	
+	menor = n2;	
+
+	atehquandotiver(j=menor:1;-1)
+	{
+		Se ((n1 MOD j == 0) AND (n2 MOD j == 0))
+		{
+			saidafunc j;
+		}	
+	}
+
+	saidafunc 1;
+}
+
+funcprincipal
+{
+	int num1,num2;
+	imprimir "Digite o primeiro numero:";
+	ler num1;
+	imprimir "Digite o segundo numero:";
+	ler num2;
+	imprimir "MDC entre "+num1+" e "+num2+" :";
+	imprimir mdc(n1,n2);
+	
+}

@@ -1,4 +1,4 @@
-funcsecundaria bool ehomestre (string nome)
+funcsecundaria booleano ehomestre (sentenca nome)
 {
 	se(nome == "Zimbrao")
 	{
@@ -12,7 +12,7 @@ funcsecundaria bool ehomestre (string nome)
 
 funcprincipal
 {
-	string nome="Zimbrao";
+	sentenca nome="Zimbrao";
 	enquantotiver (ehomestre (nome))
 	{
 		imprimir "Mestre";
