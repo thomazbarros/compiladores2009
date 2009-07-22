@@ -1,0 +1,37 @@
+
+<? Programa que soma dois vetores. ?>
+
+principal
+{
+	inteiro vet_a[3];
+	inteiro vet_b[3];
+	inteiro vet_c[3];
+	
+	inteiro i = 0;
+	
+	saida("Digite os valores de um vetor de tamanho 3:");
+	para 1 ate 3
+	{
+		entrada(vet_a[i]);
+		i = i + 1;
+	}
+	
+	i = 0;
+	saida("Digite os valores de um vetor de tamanho 3:");
+	para 1 ate 3
+	{
+		entrada(vet_b[i]);
+		i = i + 1;
+	}
+	
+	i = 0;
+	saida("A soma dos vetores A e B será:");
+	para 1 ate 3
+	{
+		vet_c[i] = vet_a[i] + vet_b[i];
+		saida(vet_c[i]);
+		saida("\n");
+		i = i + 1;
+	}
+	saida("\n");
+}

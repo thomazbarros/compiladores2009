@@ -1,0 +1,55 @@
+
+<? Programa que ordena um vetor pelo algoritmo bubble sort. ?>
+
+principal
+{
+	inteiro vet[5];
+	boolean nao_arrumado = verdadeiro;
+	inteiro i;	
+	inteiro aux;
+	
+	vet[0] = 4;
+	vet[1] = 6;
+	vet[2] = 5;
+	vet[3] = 1;
+	vet[4] = 2;
+	
+	saida("Vetor não arrumado:");
+	i = 0;
+	para 0 ate 4
+	{
+		saida("\n");
+		saida(vet[i]);
+		i = i + 1;
+	}
+	
+	faca
+	{
+		nao_arrumado = falso;
+		i = 0;
+		para 0 ate 3
+		{
+			se (vet[i] > vet[i+1])
+			{
+				aux = vet[i];
+				vet[i] = vet[i+1];
+				vet[i+1] = aux;
+				nao_arrumado = verdadeiro;
+			}
+			i = i + 1;
+		}
+	}
+	enquanto (nao_arrumado);
+	
+	saida("\n");
+	saida("Vetor arrumado após o Bubble Sort:");
+	i = 0;
+	para 0 ate 4
+	{
+		saida("\n");
+		saida(vet[i]);
+		i = i + 1;
+	}
+	
+	saida("\n");
+}
