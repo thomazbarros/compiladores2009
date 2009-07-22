@@ -1,0 +1,44 @@
+
+<? Programa que calcula a média da turma. ?>
+
+principal
+{
+	inteiro i;
+	inteiro alunos;
+	
+	string nome;
+	inteiro nota;
+	
+	real soma;
+	
+	i = 0;
+	soma = 0;
+	
+	saida("Quantidade de alunos:");
+	entrada(alunos);
+	
+	faca
+	{
+		saida("Digite um nome: ");
+		entrada(nome);
+		saida("Digite a nota do aluno:");
+		entrada(nota);
+		soma = soma + nota;
+		i = i + 1;
+	}
+	enquanto (i < alunos);
+	
+	saida("A media da turma é: ");
+	saida(soma/alunos);
+	saida("\n");
+	
+	se (soma/alunos >= 7)
+	{	
+		saida("A turma está acima da média !!");
+	}
+	senao
+	{
+		saida("A turma tá muito fraca");
+	}
+	saida("\n");
+}

@@ -1,0 +1,23 @@
+
+<? Programa que incrementa 1 número. ?>
+
+prototipo inteiro incrementa(inteiro $a);
+
+principal
+{
+	inteiro a;
+	
+	saida("Digite um número:");
+	entrada(a);
+	
+	para 1 ate 10
+	{
+		a = incrementa(a);
+		saida(a);
+	}
+	
+}
+inteiro incrementa(inteiro $a)
+{
+	retorno a + 1;
+}
