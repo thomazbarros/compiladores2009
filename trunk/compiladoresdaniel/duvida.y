@@ -1134,5 +1134,10 @@ int main(void)
 	lista_de_variaveis = "";
 	nivel_ctrl.push_back(nivel);
 	var.push_back(*(new map<string, Variavel*>));
-  yyparse();
+  	yyparse();
+}
+
+gera_inicializacao_variaveis_globais(atributos_variavel &esquerda, atributos_variavel &primeiro)
+{
+	primeiro += codigo;
 }

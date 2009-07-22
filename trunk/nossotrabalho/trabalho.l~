@@ -40,6 +40,8 @@ SENTENCA		\"([^\"\n]|(\\\"))*\"
 ">="		{ yylval.valor = yytext; return TK_CMP_MAIORIG; }
 "<"		{ yylval.valor = yytext; return TK_CMP_MENOR; }
 "<="		{ yylval.valor = yytext; return TK_CMP_MENORIG; }
+"+="		{ yylval.valor = yytext; return TK_AT_MAIS; }
+"-="		{ yylval.valor = yytext; return TK_AT_MENOS; }
 
 "!"		{ yylval.valor = yytext; return TK_LOG_NOT; }
 "&&"		{ yylval.valor = yytext; return TK_LOG_E; }
@@ -57,6 +59,7 @@ SENTENCA		\"([^\"\n]|(\\\"))*\"
 "voltaAew"	{ yylval.valor = yytext; return TK_FUNC_RETURN; }
 "le"		{ yylval.valor = yytext; return TK_FUNC_ENT; }
 "escreve"	{ yylval.valor = yytext; return TK_FUNC_SAIDA; }
+"escrevepl"	{ yylval.valor = yytext; return TK_FUNC_SAIDA_PL; }
 
 "true"		{ yylval.valor = yytext; yylval.tipo.base = "bool"; return TK_BOOL; }
 "false"		{ yylval.valor = yytext; yylval.tipo.base = "bool"; return TK_BOOL; }
