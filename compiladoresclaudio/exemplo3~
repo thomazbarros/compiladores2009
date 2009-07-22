@@ -1,0 +1,32 @@
+funcsecundaria inteiro mdc (inteiro n1,inteiro n2)
+{
+	inteiro menor,j;
+
+	Se (n1 < n2)
+	{	
+		menor = n1;
+	}	
+	menor = n2;	
+
+	atehquandotiver(j=n:1;-1)
+	{
+		Se ((n1 MOD j == 0) AND (n2 MOD j == 0))
+		{
+			saidafunc j;
+		}	
+	}
+
+	saidafunc 1;
+}
+
+funcprincipal
+{
+	inteiro num1,num2;
+	imprimir "Digite o primeiro numero:";
+	ler num1;
+	imprimir "Digite o segundo numero:";
+	ler num2;
+	imprimir "MDC entre "+num1+" e "+num2+" :";
+	imprimir mdc(n1,n2);
+	
+}

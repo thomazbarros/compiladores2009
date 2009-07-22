@@ -1,4 +1,4 @@
-funcsecundaria int fatorial (int n)
+funcsecundaria inteiro fatorial (inteiro n)
 {
 	Se( n < 2)
 	{
@@ -9,10 +9,9 @@ funcsecundaria int fatorial (int n)
 
 funcprincipal
 {
-	int i;
+	inteiro i;
 	imprimir "Digite um numero:";
 	ler i;
-	imprimir "Fatorial de"+i+":";
 	imprimir fatorial(i);
 	
 }

@@ -352,7 +352,7 @@ string strtoupper (string entrada)
 	//{
 //		entrada[i] = toupper(entrada[i]);
 //	}
-	//entrada = toupper(entrada);
+	entrada = toupper(entrada);
 	//transform(entrada.begin(), entrada.end(), entrada.begin(), (int(*)(int))toupper);
 	return entrada;
 }
