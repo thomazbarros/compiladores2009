@@ -2,7 +2,7 @@ funcsecundaria int mdc (int n1,int n2)
 {
 	int menor,j;
 
-	Se (n1 < n2)
+	se (n1 < n2)
 	{	
 		menor = n1;
 	}	
